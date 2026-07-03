@@ -20,7 +20,13 @@ private:
     int speed;
     int groundY;
 
+    bool passed;
+
 public:
     static constexpr int WIDTH = 40;
     static constexpr int HEIGHT = 60;
+
+public:
+    bool hasPassedPlayer(int playerX);
+    void resetPassed();
 };

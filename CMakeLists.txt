@@ -12,6 +12,7 @@ add_executable(HyperDash
     src/Game.cpp
     src/Player.cpp
     src/Obstacle.cpp
+    src/Score.cpp
 )
 
 target_include_directories(HyperDash PRIVATE

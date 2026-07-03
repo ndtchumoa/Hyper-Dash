@@ -6,6 +6,8 @@ Obstacle::Obstacle()
 
     speed = 6;
     groundY = 0;
+
+    passed = false;
 }
 
 void Obstacle::setGroundY(int y)
@@ -21,6 +23,7 @@ void Obstacle::update()
     if (rect.x + WIDTH < 0)
     {
         rect.x = 800;
+        passed = false;
     }
 }
 
@@ -33,4 +36,20 @@ void Obstacle::render(SDL_Renderer* renderer)
 const SDL_Rect& Obstacle::getRect() const
 {
     return rect;
+}
+
+bool Obstacle::hasPassedPlayer(int playerX)
+{
+    if (!passed && rect.x + WIDTH < playerX)
+    {
+        passed = true;
+        return true;
+    }
+
+    return false;
+}
+
+void Obstacle::resetPassed()
+{
+    passed = false;
 }

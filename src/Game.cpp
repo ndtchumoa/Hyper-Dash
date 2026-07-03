@@ -5,7 +5,8 @@
 Game::Game()
     : window(nullptr),
       renderer(nullptr),
-      running(false)
+      running(false),
+      state(GameState::Playing)
 {
 }
 
@@ -60,6 +61,8 @@ bool Game::init()
 
     obstacle.setGroundY(ground.y - Obstacle::HEIGHT);
 
+    SDL_SetWindowTitle(window, score.getText().c_str());
+
     running = true;
 
     return true;
@@ -72,33 +75,69 @@ void Game::handleEvents()
     while (SDL_PollEvent(&e))
     {
         if (e.type == SDL_QUIT)
+        {
             running = false;
+        }
 
         if (e.type == SDL_KEYDOWN)
         {
-            if (e.key.keysym.sym == SDLK_SPACE)
+            // ESC luôn thoát game
+            if (e.key.keysym.sym == SDLK_ESCAPE)
+            {
+                running = false;
+            }
+
+            // Space chỉ hoạt động khi đang chơi
+            if (state == GameState::Playing &&
+                e.key.keysym.sym == SDLK_SPACE)
+            {
                 player.jump();
+            }
+
+            // R chỉ hoạt động khi Game Over
+            if (state == GameState::GameOver &&
+                e.key.keysym.sym == SDLK_r)
+            {
+                reset();
+            }
         }
     }
 }
 
 void Game::update()
 {
+    if (state != GameState::Playing)
+        return;
+
     player.update();
     obstacle.update();
+
+    if (obstacle.hasPassedPlayer(player.getRect().x))
+    {
+        score.increase();
+        SDL_SetWindowTitle(window, score.getText().c_str());
+    }
 
     if (SDL_HasIntersection(
             &player.getRect(),
             &obstacle.getRect()))
     {
-        running = false;
+        state = GameState::GameOver;
     }
 }
 
 void Game::render()
 {
     // Sky (xanh nhạt)
-    SDL_SetRenderDrawColor(renderer, 135, 206, 235, 255);
+    if (state == GameState::Playing)
+    {
+        SDL_SetRenderDrawColor(renderer, 135, 206, 235, 255);
+    }
+    else
+    {
+        SDL_SetRenderDrawColor(renderer, 180, 60, 60, 255);
+    }
+
     SDL_RenderClear(renderer);
 
     // Ground (xám đậm)
@@ -139,4 +178,20 @@ void Game::clean()
     }
 
     SDL_Quit();
+}
+
+void Game::reset()
+{
+    player = Player();
+    obstacle = Obstacle();
+
+    player.setGroundY(ground.y - Player::HEIGHT);
+    obstacle.setGroundY(ground.y - Obstacle::HEIGHT);
+
+    state = GameState::Playing;
+
+    score.reset();
+    SDL_SetWindowTitle(window, score.getText().c_str());
+
+    obstacle.resetPassed();
 }
