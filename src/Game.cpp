@@ -23,6 +23,12 @@ bool Game::init()
         return false;
     }
 
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
+    {
+        std::cerr << IMG_GetError() << '\n';
+        return false;
+    }
+
     window = SDL_CreateWindow(
         "Hyper Dash",
         SDL_WINDOWPOS_CENTERED,
@@ -60,6 +66,8 @@ bool Game::init()
     player.setGroundY(ground.y - Player::HEIGHT);
 
     obstacle.setGroundY(ground.y - Obstacle::HEIGHT);
+
+    background.load(renderer);
 
     SDL_SetWindowTitle(window, score.getText().c_str());
 
@@ -106,6 +114,8 @@ void Game::handleEvents()
 
 void Game::update()
 {
+    background.update();     
+
     if (state != GameState::Playing)
         return;
 
@@ -139,6 +149,7 @@ void Game::render()
     }
 
     SDL_RenderClear(renderer);
+    background.render(renderer);
 
     // Ground (xám đậm)
     SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
@@ -165,6 +176,8 @@ void Game::run()
 
 void Game::clean()
 {
+    background.clean();   // thêm dòng này
+
     if (renderer)
     {
         SDL_DestroyRenderer(renderer);
@@ -177,6 +190,7 @@ void Game::clean()
         window = nullptr;
     }
 
+    IMG_Quit();
     SDL_Quit();
 }
 

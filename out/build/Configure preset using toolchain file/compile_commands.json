@@ -1,0 +1,44 @@
+[
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\main.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\main.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/main.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\Game.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\Game.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/Game.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/Game.cpp.obj"
+},
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\Player.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\Player.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/Player.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/Player.cpp.obj"
+},
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\Obstacle.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\Obstacle.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/Obstacle.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/Obstacle.cpp.obj"
+},
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\Score.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\Score.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/Score.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/Score.cpp.obj"
+},
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\TextureManager.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\TextureManager.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/TextureManager.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/TextureManager.cpp.obj"
+},
+{
+  "directory": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file",
+  "command": "C:\\msys64\\ucrt64\\bin\\c++.exe -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED\" -I\"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)\" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2 -g -std=gnu++20 -o CMakeFiles\\HyperDash.dir\\src\\Background.cpp.obj -c \"C:\\Users\\nguye\\.vscode\\Projects\\hyper dash\\Hyper-Dash\\src\\Background.cpp\"",
+  "file": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/src/Background.cpp",
+  "output": "C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/out/build/Configure preset using toolchain file/CMakeFiles/HyperDash.dir/src/Background.cpp.obj"
+}
+]

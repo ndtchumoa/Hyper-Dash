@@ -1,9 +1,11 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include "Player.h"
 #include "Obstacle.h"
 #include "Score.h"
+#include "Background.h"
 
 enum class GameState
 {
@@ -41,4 +43,5 @@ private:
 
     GameState state;
     Score score;
+    Background background;
 };
