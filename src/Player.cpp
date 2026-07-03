@@ -34,7 +34,10 @@ void Player::update()
 void Player::render(SDL_Renderer* renderer)
 {
     SDL_SetRenderDrawColor(renderer, 50, 220, 50, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    SDL_RenderCopy(renderer,
+               texture,
+               nullptr,
+               &rect);
 }
 
 void Player::setGroundY(int y)

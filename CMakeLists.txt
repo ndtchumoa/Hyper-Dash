@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(SDL2 CONFIG REQUIRED)
+find_package(SDL2 REQUIRED CONFIG)
+find_package(SDL2_image REQUIRED CONFIG)
 
 add_executable(HyperDash
     src/main.cpp
@@ -21,4 +23,5 @@ target_include_directories(HyperDash PRIVATE
 
 target_link_libraries(HyperDash PRIVATE
     SDL2::SDL2
+    SDL2_image::SDL2_image
 )

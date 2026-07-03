@@ -20,6 +20,7 @@ public:
 
 private:
     SDL_Rect rect;
+    SDL_Texture* texture;
 
     float velocityY;
     bool isJumping;
