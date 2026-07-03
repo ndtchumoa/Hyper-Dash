@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SDL2/SDL.h>
+#include "Player.h"
 
 class Game
 {
@@ -20,6 +21,14 @@ private:
 private:
     SDL_Window* window;
     SDL_Renderer* renderer;
+    SDL_Rect ground;
 
+private:
+    Player player;
+
+private:
+    static constexpr int WINDOW_WIDTH = 800;
+    static constexpr int WINDOW_HEIGHT = 600;
+    static constexpr int GROUND_HEIGHT = 50;
     bool running;
 };

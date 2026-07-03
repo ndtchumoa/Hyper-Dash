@@ -10,6 +10,7 @@ find_package(SDL2 CONFIG REQUIRED)
 add_executable(HyperDash
     src/main.cpp
     src/Game.cpp
+    src/Player.cpp
 )
 
 target_include_directories(HyperDash PRIVATE
