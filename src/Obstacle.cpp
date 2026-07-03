@@ -29,3 +29,8 @@ void Obstacle::render(SDL_Renderer* renderer)
     SDL_SetRenderDrawColor(renderer, 220, 40, 40, 255);
     SDL_RenderFillRect(renderer, &rect);
 }
+
+const SDL_Rect& Obstacle::getRect() const
+{
+    return rect;
+}

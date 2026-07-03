@@ -1,13 +1,11 @@
 #include "Player.h"
 
 Player::Player()
+    : rect{100, 500, WIDTH, HEIGHT},
+      velocityY(0.0f),
+      isJumping(false),
+      groundY(0)
 {
-    rect = {100, 500, WIDTH, HEIGHT};
-
-    velocityY = 0.0f;
-    isJumping = false;
-
-    groundY = 500;
 }
 
 void Player::jump()
@@ -42,4 +40,9 @@ void Player::render(SDL_Renderer* renderer)
 void Player::setGroundY(int y)
 {
     groundY = y;
+}
+
+const SDL_Rect& Player::getRect() const
+{
+    return rect;
 }

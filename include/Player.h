@@ -13,6 +13,8 @@ public:
     void jump();
     void setGroundY(int y);
 
+    const SDL_Rect& getRect() const;
+
     static constexpr int WIDTH = 50;
     static constexpr int HEIGHT = 50;
 
@@ -20,9 +22,7 @@ private:
     SDL_Rect rect;
 
     float velocityY;
-
     bool isJumping;
-
     int groundY;
 
     static constexpr float gravity = 0.6f;

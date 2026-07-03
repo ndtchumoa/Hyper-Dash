@@ -12,6 +12,8 @@ public:
 
     void setGroundY(int y);
 
+    const SDL_Rect& getRect() const;
+
 private:
     SDL_Rect rect;
 

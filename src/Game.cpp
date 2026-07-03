@@ -86,6 +86,13 @@ void Game::update()
 {
     player.update();
     obstacle.update();
+
+    if (SDL_HasIntersection(
+            &player.getRect(),
+            &obstacle.getRect()))
+    {
+        running = false;
+    }
 }
 
 void Game::render()
