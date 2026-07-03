@@ -58,6 +58,8 @@ bool Game::init()
 
     player.setGroundY(ground.y - Player::HEIGHT);
 
+    obstacle.setGroundY(ground.y - Obstacle::HEIGHT);
+
     running = true;
 
     return true;
@@ -83,17 +85,24 @@ void Game::handleEvents()
 void Game::update()
 {
     player.update();
+    obstacle.update();
 }
 
 void Game::render()
 {
-    SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
+    // Sky (xanh nhạt)
+    SDL_SetRenderDrawColor(renderer, 135, 206, 235, 255);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+    // Ground (xám đậm)
+    SDL_SetRenderDrawColor(renderer, 90, 90, 90, 255);
     SDL_RenderFillRect(renderer, &ground);
 
+    // Player (xanh lá) - màu được đặt trong Player::render()
     player.render(renderer);
+
+    // Obstacle (đỏ) - màu được đặt trong Obstacle::render()
+    obstacle.render(renderer);
 
     SDL_RenderPresent(renderer);
 }

@@ -11,6 +11,7 @@ add_executable(HyperDash
     src/main.cpp
     src/Game.cpp
     src/Player.cpp
+    src/Obstacle.cpp
 )
 
 target_include_directories(HyperDash PRIVATE

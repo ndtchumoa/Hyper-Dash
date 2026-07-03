@@ -2,6 +2,7 @@
 
 #include <SDL2/SDL.h>
 #include "Player.h"
+#include "Obstacle.h"
 
 class Game
 {
@@ -25,6 +26,7 @@ private:
 
 private:
     Player player;
+    Obstacle obstacle;
 
 private:
     static constexpr int WINDOW_WIDTH = 800;
