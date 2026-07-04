@@ -1,2 +1,42 @@
-/build/
-.vscode/
+# ==========================================
+# Cấu hình .gitignore cho Hyper-Dash (CMake/MSVC/vcpkg)
+# ==========================================
+
+# Thư mục build và output của hệ thống compile
+build/
+out/
+bin/
+.ninja_log
+.ninja_deps
+
+# File cache và cấu hình tự động của CMake
+CMakeCache.txt
+CMakeFiles/
+CMakePresets.json
+*.cmake
+
+# Các file rác tạm thời của Visual Studio / MSVC
+.vs/
+*.sln
+*.vcxproj
+*.filters
+*.user
+*.suo
+*.db
+*.opendb
+*.ipch
+*.ilk
+*.pdb
+*.exp
+
+# Cấu hình riêng của VS Code (Giữ lại file cấu hình chung, bỏ các file tạm)
+.vscode/.DS_Store
+.vscode/ipch/
+.vscode/*.log
+
+# Quản lý gói thư viện (Nếu bạn cài vcpkg dạng cục bộ trong project)
+vcpkg_installed/
+
+# Các file log và file tạm của hệ thống
+*.log
+*.tmp

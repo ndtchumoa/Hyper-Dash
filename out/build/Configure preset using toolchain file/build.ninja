@@ -49,67 +49,157 @@ cmake_ninja_workdir = C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/ou
 
 build cmake_object_order_depends_target_HyperDash: phony || .
 
-build CMakeFiles/HyperDash.dir/src/main.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/main.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/main.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/main.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\main.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\main.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
-build CMakeFiles/HyperDash.dir/src/Game.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/Game.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/src/engine/Game.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/engine/Game.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\Game.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\engine\Game.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\engine
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
-build CMakeFiles/HyperDash.dir/src/Player.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/Player.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/src/engine/Scene.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/engine/Scene.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\Player.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\engine\Scene.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\engine
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
-build CMakeFiles/HyperDash.dir/src/Obstacle.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/Obstacle.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/src/engine/SceneManager.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/engine/SceneManager.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\Obstacle.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\engine\SceneManager.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\engine
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
-build CMakeFiles/HyperDash.dir/src/Score.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/Score.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/src/entities/Obstacle.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/entities/Obstacle.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\Score.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\entities\Obstacle.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\entities
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
-build CMakeFiles/HyperDash.dir/src/TextureManager.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/TextureManager.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/src/entities/ObstacleManager.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/entities/ObstacleManager.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\TextureManager.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\entities\ObstacleManager.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\entities
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
-build CMakeFiles/HyperDash.dir/src/Background.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/Background.cpp || cmake_object_order_depends_target_HyperDash
+build CMakeFiles/HyperDash.dir/src/entities/Player.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/entities/Player.cpp || cmake_object_order_depends_target_HyperDash
   CONFIG = Debug
-  DEP_FILE = CMakeFiles\HyperDash.dir\src\Background.cpp.obj.d
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\entities\Player.cpp.obj.d
   FLAGS = -g -std=gnu++20
-  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/find_package" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/(" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/SDL2" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/CONFIG" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/REQUIRED" -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/)" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
   OBJECT_DIR = CMakeFiles\HyperDash.dir
-  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\entities
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/scenes/GameOverScene.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/scenes/GameOverScene.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\scenes\GameOverScene.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\scenes
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/scenes/MenuScene.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/scenes/MenuScene.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\scenes\MenuScene.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\scenes
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/scenes/PlayScene.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/scenes/PlayScene.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\scenes\PlayScene.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\scenes
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/systems/Animation.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/systems/Animation.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\systems\Animation.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\systems
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/systems/AnimationManager.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/systems/AnimationManager.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\systems\AnimationManager.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\systems
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/systems/AssetManager.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/systems/AssetManager.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\systems\AssetManager.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\systems
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/systems/AudioManager.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/systems/AudioManager.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\systems\AudioManager.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\systems
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/systems/InputSystem.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/systems/InputSystem.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\systems\InputSystem.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\systems
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/ui/Score.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/ui/Score.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\ui\Score.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\ui
+  TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
+
+build CMakeFiles/HyperDash.dir/src/world/Background.cpp.obj: CXX_COMPILER__HyperDash_unscanned_Debug C$:/Users/nguye/.vscode/Projects/hyper$ dash/Hyper-Dash/src/world/Background.cpp || cmake_object_order_depends_target_HyperDash
+  CONFIG = Debug
+  DEP_FILE = CMakeFiles\HyperDash.dir\src\world\Background.cpp.obj.d
+  FLAGS = -g -std=gnu++20
+  INCLUDES = -I"C:/Users/nguye/.vscode/Projects/hyper dash/Hyper-Dash/include" -isystem C:/dev/vcpkg/installed/x64-windows/include -isystem C:/dev/vcpkg/installed/x64-windows/include/SDL2
+  OBJECT_DIR = CMakeFiles\HyperDash.dir
+  OBJECT_FILE_DIR = CMakeFiles\HyperDash.dir\src\world
   TARGET_SUPPORT_DIR = CMakeFiles\HyperDash.dir
 
 
@@ -120,7 +210,7 @@ build CMakeFiles/HyperDash.dir/src/Background.cpp.obj: CXX_COMPILER__HyperDash_u
 #############################################
 # Link the executable HyperDash.exe
 
-build HyperDash.exe: CXX_EXECUTABLE_LINKER__HyperDash_Debug CMakeFiles/HyperDash.dir/src/main.cpp.obj CMakeFiles/HyperDash.dir/src/Game.cpp.obj CMakeFiles/HyperDash.dir/src/Player.cpp.obj CMakeFiles/HyperDash.dir/src/Obstacle.cpp.obj CMakeFiles/HyperDash.dir/src/Score.cpp.obj CMakeFiles/HyperDash.dir/src/TextureManager.cpp.obj CMakeFiles/HyperDash.dir/src/Background.cpp.obj | C$:/dev/vcpkg/installed/x64-windows/debug/lib/manual-link/SDL2maind.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_imaged.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_ttfd.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_mixerd.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2d.lib
+build HyperDash.exe: CXX_EXECUTABLE_LINKER__HyperDash_Debug CMakeFiles/HyperDash.dir/main.cpp.obj CMakeFiles/HyperDash.dir/src/engine/Game.cpp.obj CMakeFiles/HyperDash.dir/src/engine/Scene.cpp.obj CMakeFiles/HyperDash.dir/src/engine/SceneManager.cpp.obj CMakeFiles/HyperDash.dir/src/entities/Obstacle.cpp.obj CMakeFiles/HyperDash.dir/src/entities/ObstacleManager.cpp.obj CMakeFiles/HyperDash.dir/src/entities/Player.cpp.obj CMakeFiles/HyperDash.dir/src/scenes/GameOverScene.cpp.obj CMakeFiles/HyperDash.dir/src/scenes/MenuScene.cpp.obj CMakeFiles/HyperDash.dir/src/scenes/PlayScene.cpp.obj CMakeFiles/HyperDash.dir/src/systems/Animation.cpp.obj CMakeFiles/HyperDash.dir/src/systems/AnimationManager.cpp.obj CMakeFiles/HyperDash.dir/src/systems/AssetManager.cpp.obj CMakeFiles/HyperDash.dir/src/systems/AudioManager.cpp.obj CMakeFiles/HyperDash.dir/src/systems/InputSystem.cpp.obj CMakeFiles/HyperDash.dir/src/ui/Score.cpp.obj CMakeFiles/HyperDash.dir/src/world/Background.cpp.obj | C$:/dev/vcpkg/installed/x64-windows/debug/lib/manual-link/SDL2maind.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_imaged.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_ttfd.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_mixerd.lib C$:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2d.lib
   CONFIG = Debug
   FLAGS = -g
   LINK_LIBRARIES = C:/dev/vcpkg/installed/x64-windows/debug/lib/manual-link/SDL2maind.lib  C:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_imaged.lib  C:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_ttfd.lib  C:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2_mixerd.lib  -lshell32  C:/dev/vcpkg/installed/x64-windows/debug/lib/SDL2d.lib  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
