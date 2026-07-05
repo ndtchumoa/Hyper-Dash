@@ -10,22 +10,21 @@
 class PlayScene : public Scene
 {
 public:
+
     explicit PlayScene(Game& game);
 
-    void init() override;
+    void init()                               override;
     void handleEvents(const SDL_Event& event) override;
-    void update() override;
-    void render(SDL_Renderer* renderer) override;
-    void clean() override;
+    void update(float deltaTime)              override;
+    void render(SDL_Renderer* renderer)       override;
+    void clean()                              override;
 
 private:
-    Background background;
 
-    Player player;
-
+    Background      background;
+    Player          player;
     ObstacleManager obstacleManager;
-
-    Score score;
+    Score           score;
 
     SDL_Rect ground{};
 

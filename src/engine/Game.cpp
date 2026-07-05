@@ -2,10 +2,9 @@
 
 #include "scenes/PlayScene.h"
 
+#include <SDL2/SDL_ttf.h>
+
 #include <iostream>
-#include <algorithm>
-#include <cstdlib>
-#include <cmath>
 
 Game::Game() = default;
 
@@ -16,33 +15,45 @@ Game::~Game()
 
 bool Game::init()
 {
-    //==========================
-    // SDL
-    //==========================
+    //==============================
+    // SDL core
+    //==============================
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
     {
         std::cerr
-            << "SDL_Init failed: "
-            << SDL_GetError()
-            << '\n';
-
+            << "[Game] SDL_Init failed: "
+            << SDL_GetError() << '\n';
         return false;
     }
+
+    //==============================
+    // SDL_image
+    //==============================
 
     if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
     {
         std::cerr
-            << "IMG_Init failed: "
-            << IMG_GetError()
-            << '\n';
-
+            << "[Game] IMG_Init failed: "
+            << IMG_GetError() << '\n';
         return false;
     }
 
-    //==========================
+    //==============================
+    // SDL_ttf
+    //==============================
+
+    if (TTF_Init() == -1)
+    {
+        std::cerr
+            << "[Game] TTF_Init failed: "
+            << TTF_GetError() << '\n';
+        return false;
+    }
+
+    //==============================
     // Window
-    //==========================
+    //==============================
 
     window = SDL_CreateWindow(
         "Hyper Dash",
@@ -54,78 +65,63 @@ bool Game::init()
 
     if (!window)
     {
-        std::cerr
-            << "Failed to create window.\n";
-
+        std::cerr << "[Game] Failed to create window.\n";
         return false;
     }
 
-    //==========================
+    //==============================
     // Renderer
-    //==========================
+    //==============================
 
     renderer = SDL_CreateRenderer(
         window,
         -1,
-        SDL_RENDERER_ACCELERATED |
-        SDL_RENDERER_PRESENTVSYNC);
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
     if (!renderer)
     {
-        std::cerr
-            << "Failed to create renderer.\n";
-
+        std::cerr << "[Game] Failed to create renderer.\n";
         return false;
     }
 
-    //==========================
+    //==============================
     // Asset Manager
-    //==========================
+    //==============================
 
     assets.init(renderer);
 
-    // preload
-    assets.getTexture(
-        "assets/textures/player/Character skin colors/Male Skin1.png");
-
-    assets.getTexture(
-        "assets/textures/obstacle/Ores.png");
-
-    //==========================
+    //==============================
     // First Scene
-    //==========================
+    //==============================
 
     sceneManager.changeScene(
         std::make_unique<PlayScene>(*this));
 
-    running = true;
+    running   = true;
+    lastTicks = SDL_GetTicks();
 
-    std::cout
-        << "Engine initialized successfully.\n";
+    std::cout << "[Game] Engine initialized successfully.\n";
 
     return true;
-    
-    //==========================
-    // Score
-    //==========================
-    if (TTF_Init() == -1)
-    {
-        std::cerr << "TTF_Init failed: "
-                << TTF_GetError()
-                << '\n';
-
-        return false;
-    }
 }
 
 void Game::run()
 {
     while (running)
     {
+        const std::uint32_t now   = SDL_GetTicks();
+        const std::uint32_t diff  = now - lastTicks;
+        lastTicks = now;
+
+        // Clamp delta time: tránh spiral of death khi window bị drag / debug pause.
+        // Giới hạn tối đa 100ms (~10 FPS) để physics không explode.
+        constexpr std::uint32_t MAX_DELTA_MS = 100;
+        const float deltaTime =
+            static_cast<float>(diff < MAX_DELTA_MS ? diff : MAX_DELTA_MS)
+            / 1000.0f;
+
         handleEvents();
-
-        update();
-
+        update(deltaTime);
         render();
     }
 }
@@ -145,19 +141,14 @@ void Game::handleEvents()
     }
 }
 
-void Game::update()
+void Game::update(float deltaTime)
 {
-    sceneManager.update();
+    sceneManager.update(deltaTime);
 }
 
 void Game::render()
 {
-    SDL_SetRenderDrawColor(
-        renderer,
-        25,
-        25,
-        25,
-        255);
+    SDL_SetRenderDrawColor(renderer, 25, 25, 25, 255);
 
     SDL_RenderClear(renderer);
 
@@ -182,9 +173,7 @@ void Game::clean()
         window = nullptr;
     }
 
-    IMG_Quit();
-
-    SDL_Quit();
-
     TTF_Quit();
+    IMG_Quit();
+    SDL_Quit();
 }

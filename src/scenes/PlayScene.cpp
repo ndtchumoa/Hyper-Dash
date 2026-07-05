@@ -13,54 +13,21 @@ PlayScene::PlayScene(Game& game)
 
 void PlayScene::init()
 {
-    //==========================
-    // Ground
-    //==========================
-
-    ground =
-    {
-        0,
-        720 - GROUND_HEIGHT,
-        1280,
-        GROUND_HEIGHT
-    };
-
-    //==========================
-    // Background
-    //==========================
+    ground = { 0, 720 - GROUND_HEIGHT, 1280, GROUND_HEIGHT };
 
     background.init(game.getAssets());
 
-    //==========================
-    // Player
-    //==========================
-
-    player.init(
-        game.getAssets(),
-        ground.y
-    );
-
-    //==========================
-    // Obstacles
-    //==========================
+    player.init(game.getAssets(), ground.y);
 
     obstacleManager.init(
         game.getAssets(),
         ground.y,
-        ground.w
-    );
+        ground.w);
 
-    //==========================
-    // Score
-    //==========================
-
-    score.init(
-        game.getRenderer()
-    );
-
+    score.init(game.getRenderer());
     score.reset();
 
-    std::cout << "PlayScene initialized\n";
+    std::cout << "[PlayScene] Initialized.\n";
 }
 
 void PlayScene::handleEvents(const SDL_Event& event)
@@ -68,7 +35,6 @@ void PlayScene::handleEvents(const SDL_Event& event)
     switch (event.type)
     {
     case SDL_QUIT:
-
         game.quit();
         break;
 
@@ -77,19 +43,16 @@ void PlayScene::handleEvents(const SDL_Event& event)
         switch (event.key.keysym.sym)
         {
         case SDLK_ESCAPE:
-
             game.quit();
             break;
 
         case SDLK_SPACE:
-
             player.jump();
             break;
 
         default:
             break;
         }
-
         break;
 
     default:
@@ -97,30 +60,30 @@ void PlayScene::handleEvents(const SDL_Event& event)
     }
 }
 
-void PlayScene::update()
+void PlayScene::update(float deltaTime)
 {
     background.update();
 
-    player.update();
+    player.update(deltaTime);
 
     obstacleManager.update();
 
-    //==========================
+    //==============================
     // Collision
-    //==========================
+    //==============================
 
     if (obstacleManager.checkCollision(player.getBounds()))
     {
-        std::cout << "Game Over\n";
+        std::cout << "[PlayScene] Game Over.\n";
 
-        // Sprint sau:
+        // TODO: chuyển sang GameOverScene trong sprint sau
         // game.getSceneManager().changeScene(
         //     std::make_unique<GameOverScene>(game));
     }
 
-    //==========================
+    //==============================
     // Score
-    //==========================
+    //==============================
 
     if (obstacleManager.checkPassed(player.getBounds().x))
     {
@@ -136,20 +99,11 @@ void PlayScene::render(SDL_Renderer* renderer)
 
     obstacleManager.render(renderer);
 
-    // score.render(renderer);
+    // score.render(renderer);  // TODO: re-enable khi Score được migrate sang TTF
 
-    SDL_SetRenderDrawColor(
-        renderer,
-        80,
-        80,
-        80,
-        255
-    );
-
-    SDL_RenderFillRect(
-        renderer,
-        &ground
-    );
+    // Ground placeholder
+    SDL_SetRenderDrawColor(renderer, 80, 80, 80, 255);
+    SDL_RenderFillRect(renderer, &ground);
 }
 
 void PlayScene::clean()
@@ -158,5 +112,5 @@ void PlayScene::clean()
 
     score.clean();
 
-    std::cout << "PlayScene cleaned\n";
+    std::cout << "[PlayScene] Cleaned.\n";
 }

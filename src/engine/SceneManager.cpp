@@ -2,9 +2,6 @@
 #include "engine/Scene.h"
 
 #include <iostream>
-#include <algorithm>
-#include <cstdlib>
-#include <cmath>
 
 void SceneManager::changeScene(std::unique_ptr<Scene> scene)
 {
@@ -29,11 +26,11 @@ void SceneManager::handleEvents(const SDL_Event& event)
     }
 }
 
-void SceneManager::update()
+void SceneManager::update(float deltaTime)
 {
     if (currentScene)
     {
-        currentScene->update();
+        currentScene->update(deltaTime);
     }
 }
 

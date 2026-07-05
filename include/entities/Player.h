@@ -1,8 +1,12 @@
 #pragma once
 
-#include <SDL2/SDL.h>
+#include "graphics/Animator.h"
+#include "graphics/CharacterRenderer.h"
+#include "graphics/AnimationLibrary.h"
+#include "graphics/SpriteSheet.h"
+#include "resources/AnimationID.h"
 
-#include "graphics/Animation.h"
+#include <SDL2/SDL.h>
 
 class AssetManager;
 
@@ -10,17 +14,19 @@ enum class PlayerState
 {
     Idle,
     Run,
-    Jump
+    Jump,
+    Fall
 };
 
+// Player xử lý: input response, physics, state machine, animation control.
+// Player KHÔNG biết gì về SDL_RenderCopy — đó là trách nhiệm của CharacterRenderer.
 class Player
 {
 public:
-    bool init(
-        AssetManager& assets,
-        int groundY);
 
-    void update();
+    bool init(AssetManager& assets, int groundY);
+
+    void update(float deltaTime);
 
     void render(SDL_Renderer* renderer);
 
@@ -30,29 +36,43 @@ public:
 
     SDL_Rect getBounds() const;
 
+    PlayerState getState() const { return state; }
+
 private:
 
-    //==========================
-    // Character Layers
-    //==========================
+    void updatePhysics(float deltaTime);
 
-    SDL_Texture* skin = nullptr;
-    SDL_Texture* shirt = nullptr;
-    SDL_Texture* pants = nullptr;
-    SDL_Texture* hair = nullptr;
-    SDL_Texture* shoes = nullptr;
+    void updateState();
 
-    //==========================
-    // Animation
-    //==========================
+    void updateAnimation();
 
-    Animation animation;
+    bool buildAnimationLibrary(AssetManager& assets);
 
-    PlayerState state = PlayerState::Run;
+private:
 
-    //==========================
+    //==============================
+    // Sprite Sheets (một per texture layer)
+    //==============================
+
+    SpriteSheet skinSheet;
+    SpriteSheet shirtSheet;
+    SpriteSheet pantsSheet;
+    SpriteSheet hairSheet;
+    SpriteSheet shoesSheet;
+
+    //==============================
+    // Animation pipeline
+    //==============================
+
+    AnimationLibrary animLibrary;
+
+    Animator animator;
+
+    CharacterRenderer characterRenderer;
+
+    //==============================
     // Physics
-    //==========================
+    //==============================
 
     SDL_Rect dstRect{};
 
@@ -62,21 +82,26 @@ private:
 
     bool onGround = true;
 
-    static constexpr float GRAVITY = 0.7f;
+    //==============================
+    // State
+    //==============================
 
-    static constexpr float JUMP_FORCE = -15.0f;
+    PlayerState state = PlayerState::Run;
+
+    //==============================
+    // Constants
+    //==============================
 
 public:
 
-    static constexpr int FRAME_WIDTH = 64;
-
+    static constexpr int FRAME_WIDTH  = 64;
     static constexpr int FRAME_HEIGHT = 64;
+    static constexpr int SCALE        = 2;
+    static constexpr int WIDTH        = FRAME_WIDTH  * SCALE;
+    static constexpr int HEIGHT       = FRAME_HEIGHT * SCALE;
 
-    static constexpr int SCALE = 2;
+private:
 
-    static constexpr int WIDTH =
-        FRAME_WIDTH * SCALE;
-
-    static constexpr int HEIGHT =
-        FRAME_HEIGHT * SCALE;
+    static constexpr float GRAVITY    = 980.0f;  // pixels/s^2 (variable timestep)
+    static constexpr float JUMP_FORCE = -520.0f; // pixels/s   (variable timestep)
 };

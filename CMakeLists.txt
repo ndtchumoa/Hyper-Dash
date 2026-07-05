@@ -5,51 +5,71 @@ project(HyperDash LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Tìm các thư viện SDL2 thông qua vcpkg
-find_package(SDL2 CONFIG REQUIRED)
+# SDL2 via vcpkg
+find_package(SDL2       CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
-find_package(SDL2_ttf CONFIG REQUIRED)
+find_package(SDL2_ttf   CONFIG REQUIRED)
 find_package(SDL2_mixer CONFIG REQUIRED)
 
-# Liệt kê toàn bộ source files dựa theo tree
 add_executable(HyperDash
     main.cpp
-    
+
     # Engine
     src/engine/Game.cpp
     src/engine/Scene.cpp
     src/engine/SceneManager.cpp
-    
+
     # Entities
     src/entities/Obstacle.cpp
     src/entities/ObstacleManager.cpp
     src/entities/Player.cpp
-    
+
+    # Graphics
+    src/graphics/Animation.cpp
+    src/graphics/AnimationClip.cpp
+    src/graphics/AnimationController.cpp
+    src/graphics/AnimationLibrary.cpp
+    src/graphics/Animator.cpp
+    src/graphics/Background.cpp
+    src/graphics/Camera.cpp
+    src/graphics/CharacterRenderer.cpp
+    src/graphics/ParticleSystem.cpp
+    src/graphics/SpriteSheet.cpp
+
+    # Resources
+    src/resources/ResourceLoader.cpp
+    src/resources/ResourcePath.cpp
+
     # Scenes
     src/scenes/GameOverScene.cpp
     src/scenes/MenuScene.cpp
     src/scenes/PlayScene.cpp
-    
+
     # Systems
-    src/systems/Animation.cpp
-    src/systems/AnimationManager.cpp
     src/systems/AssetManager.cpp
     src/systems/AudioManager.cpp
+    src/systems/CollisionSystem.cpp
     src/systems/InputSystem.cpp
-    
+    src/systems/SaveSystem.cpp
+
     # UI
+    src/ui/Button.cpp
+    src/ui/HUD.cpp
+    src/ui/Label.cpp
+    src/ui/ProgressBar.cpp
     src/ui/Score.cpp
-    
+
     # World
-    src/world/Background.cpp
+    src/world/ParallaxLayer.cpp
+    src/world/SpawnManager.cpp
+    src/world/TileMap.cpp
+    src/world/World.cpp
 )
 
-# Chỉ định thư mục chứa các file header (.h)
 target_include_directories(HyperDash PRIVATE
     include
 )
 
-# Link project với các thư viện SDL2
 target_link_libraries(HyperDash PRIVATE
     SDL2::SDL2main
     SDL2::SDL2
