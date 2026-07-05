@@ -2,7 +2,7 @@
 
 #include "engine/Scene.h"
 
-#include "world/Background.h"
+#include "graphics/Background.h"
 #include "entities/Player.h"
 #include "entities/ObstacleManager.h"
 #include "ui/Score.h"

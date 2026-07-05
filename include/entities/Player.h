@@ -2,7 +2,7 @@
 
 #include <SDL2/SDL.h>
 
-#include "systems/Animation.h"
+#include "graphics/Animation.h"
 
 class AssetManager;
 

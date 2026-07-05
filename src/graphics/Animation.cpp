@@ -1,4 +1,4 @@
-#include "systems/Animation.h"
+#include "graphics/Animation.h"
 
 void Animation::setFrameSize(
     int width,
