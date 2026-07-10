@@ -9,38 +9,20 @@ class AnimationLibrary
 {
 public:
 
-    AnimationLibrary() = default;
+    AnimationLibrary()  = default;
     ~AnimationLibrary() = default;
 
-    //-----------------------------------------------------
+    bool addClip(AnimationID id, const AnimationClip& clip);
 
-    bool addClip(
-        AnimationID id,
-        const AnimationClip& clip);
+    bool removeClip(AnimationID id);
 
-    //-----------------------------------------------------
+    bool hasClip(AnimationID id) const;
 
-    bool removeClip(
-        AnimationID id);
+    AnimationClip* getClip(AnimationID id);
 
-    //-----------------------------------------------------
-
-    bool hasClip(
-        AnimationID id) const;
-
-    //-----------------------------------------------------
-
-    AnimationClip* getClip(
-        AnimationID id);
-
-    const AnimationClip* getClip(
-        AnimationID id) const;
-
-    //-----------------------------------------------------
+    const AnimationClip* getClip(AnimationID id) const;
 
     void clear();
-
-    //-----------------------------------------------------
 
     std::size_t size() const;
 
@@ -48,7 +30,5 @@ public:
 
 private:
 
-    std::unordered_map<
-        AnimationID,
-        AnimationClip> clips;
+    std::unordered_map<AnimationID, AnimationClip> m_clips;
 };

@@ -5,7 +5,6 @@
 #include <string>
 #include <vector>
 #include <cstdint>
-#include <memory>
 
 class SpriteSheet;
 
@@ -31,15 +30,9 @@ public:
 
     AnimationFrame& getFrame(std::size_t index);
 
-    //-------------------------
-
     std::size_t getFrameCount() const;
 
-    //-------------------------
-
     bool empty() const;
-
-    //-------------------------
 
     void clear();
 
@@ -53,29 +46,21 @@ public:
 
     std::uint32_t getTotalDuration() const;
 
-private:
+    //-------------------------
 
-    void recalculateDuration();
+    void setSpriteSheet(const SpriteSheet* sheet);
 
-private:
-
-    std::string name;
-
-    std::vector<AnimationFrame> frames;
-
-    bool loop = true;
-
-    std::uint32_t totalDuration = 0;
+    const SpriteSheet* getSpriteSheet() const;
 
 private:
 
-    const SpriteSheet* spriteSheet = nullptr;
+    std::string m_name;
 
-public:
+    std::vector<AnimationFrame> m_frames;
 
-    void setSpriteSheet(
-        const SpriteSheet* sheet);
+    bool m_loop = true;
 
-    const SpriteSheet*
-    getSpriteSheet() const;
+    std::uint32_t m_totalDuration = 0;
+
+    const SpriteSheet* m_spriteSheet = nullptr;
 };

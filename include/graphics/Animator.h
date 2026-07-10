@@ -2,8 +2,8 @@
 
 #include "graphics/AnimationLibrary.h"
 #include "graphics/AnimationState.h"
-#include "resources/AnimationID.h"
 #include "graphics/AnimationFrame.h"
+#include "resources/AnimationID.h"
 
 #include <SDL2/SDL.h>
 
@@ -14,26 +14,22 @@ class Animator
 {
 public:
 
-    Animator() = default;
+    Animator()  = default;
     ~Animator() = default;
 
     //----------------------------------------------------------
     // Library
     //----------------------------------------------------------
 
-    void setLibrary(
-        const AnimationLibrary* library);
+    void setLibrary(const AnimationLibrary* library);
 
-    const AnimationLibrary*
-    getLibrary() const;
+    const AnimationLibrary* getLibrary() const;
 
     //----------------------------------------------------------
     // Playback
     //----------------------------------------------------------
 
-    bool play(
-        AnimationID id,
-        bool restart = false);
+    bool play(AnimationID id, bool restart = false);
 
     void stop();
 
@@ -47,109 +43,69 @@ public:
     // Update
     //----------------------------------------------------------
 
-    void update(
-        std::uint32_t deltaTime);
+    void update(std::uint32_t deltaTimeMs);
 
     //----------------------------------------------------------
-    // Speed
+    // Settings
     //----------------------------------------------------------
 
-    void setSpeed(
-        float speed);
+    void setSpeed(float speed);
 
     float getSpeed() const;
 
-    //----------------------------------------------------------
-    // Flip
-    //----------------------------------------------------------
+    void setFlip(SDL_RendererFlip flip);
 
-    void setFlip(
-        SDL_RendererFlip flip);
-
-    SDL_RendererFlip
-    getFlip() const;
+    SDL_RendererFlip getFlip() const;
 
     //----------------------------------------------------------
-    // State
+    // State queries
     //----------------------------------------------------------
 
-    AnimationPlaybackState
-    getPlaybackState() const;
+    AnimationPlaybackState getPlaybackState() const;
 
-    bool isPlaying() const;
-
-    bool isPaused() const;
-
+    bool isPlaying()   const;
+    bool isPaused()    const;
     bool hasFinished() const;
 
     //----------------------------------------------------------
-    // Current Animation
+    // Current animation
     //----------------------------------------------------------
 
-    AnimationID
-    getCurrentAnimation() const;
-
-    const AnimationClip*
-    getCurrentClip() const;
+    AnimationID          getCurrentAnimation() const;
+    const AnimationClip* getCurrentClip()      const;
 
     //----------------------------------------------------------
-    // Current Frame
+    // Current frame
     //----------------------------------------------------------
 
-    std::size_t
-    getCurrentFrameIndex() const;
-
-    const AnimationFrame&
-    getCurrentFrame() const;
+    std::size_t          getCurrentFrameIndex() const;
+    const AnimationFrame& getCurrentFrame()     const;
 
     //----------------------------------------------------------
-    // Rendering Helpers
+    // Rendering helpers
     //----------------------------------------------------------
 
-    SDL_Texture*
-    getCurrentTexture() const;
+    // Texture của clip hiện tại (lấy từ SpriteSheet gắn vào clip).
+    SDL_Texture* getCurrentTexture() const;
 
-    const SDL_Rect&
-    getCurrentSourceRect() const;
+    // sourceRect của frame hiện tại — dùng bởi CharacterRenderer.
+    const SDL_Rect& getCurrentSourceRect() const;
 
 private:
 
-    void resetPlayback(bool resetState = true);
+    void resetPlayback();
 
 private:
 
-    //----------------------------------------------------------
-    // Resources
-    //----------------------------------------------------------
+    const AnimationLibrary* m_library     = nullptr;
+    const AnimationClip*    m_currentClip = nullptr;
 
-    const AnimationLibrary* library = nullptr;
+    AnimationID            m_currentAnimation = AnimationID::None;
+    AnimationPlaybackState m_playbackState    = AnimationPlaybackState::Stopped;
 
-    const AnimationClip* currentClip = nullptr;
+    std::size_t   m_currentFrame = 0;
+    std::uint32_t m_elapsedTime  = 0;
 
-    //----------------------------------------------------------
-    // Playback
-    //----------------------------------------------------------
-
-    AnimationID currentAnimation =
-        AnimationID::None;
-
-    AnimationPlaybackState playbackState =
-        AnimationPlaybackState::Stopped;
-
-    //----------------------------------------------------------
-    // Frame
-    //----------------------------------------------------------
-
-    std::size_t currentFrame = 0;
-
-    std::uint32_t elapsedTime = 0;
-
-    //----------------------------------------------------------
-    // Playback Settings
-    //----------------------------------------------------------
-
-    float playbackSpeed = 1.0f;
-
-    SDL_RendererFlip flip =
-        SDL_FLIP_NONE;
+    float            m_playbackSpeed = 1.0f;
+    SDL_RendererFlip m_flip          = SDL_FLIP_NONE;
 };

@@ -3,104 +3,83 @@
 
 #include <stdexcept>
 
-AnimationClip::AnimationClip(std::string clipName)
-    : name(std::move(clipName))
+AnimationClip::AnimationClip(std::string name)
+    : m_name(std::move(name))
 {
 }
 
-void AnimationClip::setName(const std::string& newName)
+void AnimationClip::setName(const std::string& name)
 {
-    name = newName;
+    m_name = name;
 }
 
 const std::string& AnimationClip::getName() const
 {
-    return name;
+    return m_name;
 }
 
 void AnimationClip::addFrame(const AnimationFrame& frame)
 {
-    frames.push_back(frame);
-
-    totalDuration += frame.duration;
+    m_frames.push_back(frame);
+    m_totalDuration += frame.duration;
 }
 
-const AnimationFrame&
-AnimationClip::getFrame(std::size_t index) const
+const AnimationFrame& AnimationClip::getFrame(
+    std::size_t index) const
 {
-    if (index >= frames.size())
-    {
-        throw std::out_of_range(
-            "AnimationClip::getFrame");
-    }
+    if (index >= m_frames.size())
+        throw std::out_of_range("AnimationClip::getFrame");
 
-    return frames[index];
+    return m_frames[index];
 }
 
-AnimationFrame&
-AnimationClip::getFrame(std::size_t index)
+AnimationFrame& AnimationClip::getFrame(
+    std::size_t index)
 {
-    if (index >= frames.size())
-    {
-        throw std::out_of_range(
-            "AnimationClip::getFrame");
-    }
+    if (index >= m_frames.size())
+        throw std::out_of_range("AnimationClip::getFrame");
 
-    return frames[index];
+    return m_frames[index];
 }
 
-std::size_t
-AnimationClip::getFrameCount() const
+std::size_t AnimationClip::getFrameCount() const
 {
-    return frames.size();
+    return m_frames.size();
 }
 
 bool AnimationClip::empty() const
 {
-    return frames.empty();
+    return m_frames.empty();
 }
 
 void AnimationClip::clear()
 {
-    frames.clear();
-
-    totalDuration = 0;
+    m_frames.clear();
+    m_totalDuration = 0;
 }
 
-void AnimationClip::setLoop(bool value)
+void AnimationClip::setLoop(bool loop)
 {
-    loop = value;
+    m_loop = loop;
 }
 
 bool AnimationClip::isLooping() const
 {
-    return loop;
+    return m_loop;
 }
 
-std::uint32_t
-AnimationClip::getTotalDuration() const
+std::uint32_t AnimationClip::getTotalDuration() const
 {
-    return totalDuration;
-}
-
-void AnimationClip::recalculateDuration()
-{
-    totalDuration = 0;
-
-    for (const auto& frame : frames)
-    {
-        totalDuration += frame.duration;
-    }
+    return m_totalDuration;
 }
 
 void AnimationClip::setSpriteSheet(
     const SpriteSheet* sheet)
 {
-    spriteSheet = sheet;
+    m_spriteSheet = sheet;
 }
 
-const SpriteSheet*
-AnimationClip::getSpriteSheet() const
+const SpriteSheet* AnimationClip::getSpriteSheet() const
 {
-    return spriteSheet;
+    return m_spriteSheet;
 }

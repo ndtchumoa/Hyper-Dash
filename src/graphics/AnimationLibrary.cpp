@@ -4,69 +4,51 @@ bool AnimationLibrary::addClip(
     AnimationID id,
     const AnimationClip& clip)
 {
-    auto result = clips.emplace(id, clip);
-
-    if (!result.second)
-    {
-        result.first->second = clip;
-    }
-
+    // Overwrite nếu id đã tồn tại — clip mới luôn thắng.
+    m_clips.insert_or_assign(id, clip);
     return true;
 }
 
-bool AnimationLibrary::removeClip(
-    AnimationID id)
+bool AnimationLibrary::removeClip(AnimationID id)
 {
-    return clips.erase(id) > 0;
+    return m_clips.erase(id) > 0;
 }
 
-bool AnimationLibrary::hasClip(
+bool AnimationLibrary::hasClip(AnimationID id) const
+{
+    return m_clips.contains(id);
+}
+
+AnimationClip* AnimationLibrary::getClip(AnimationID id)
+{
+    auto it = m_clips.find(id);
+
+    return (it != m_clips.end())
+        ? &it->second
+        : nullptr;
+}
+
+const AnimationClip* AnimationLibrary::getClip(
     AnimationID id) const
 {
-    return clips.find(id) != clips.end();
-}
+    auto it = m_clips.find(id);
 
-AnimationClip*
-AnimationLibrary::getClip(
-    AnimationID id)
-{
-    auto it = clips.find(id);
-
-    if (it == clips.end())
-    {
-        return nullptr;
-    }
-
-    return &it->second;
-}
-
-const AnimationClip*
-AnimationLibrary::getClip(
-    AnimationID id) const
-{
-    auto it = clips.find(id);
-
-    if (it == clips.end())
-    {
-        return nullptr;
-    }
-
-    return &it->second;
+    return (it != m_clips.end())
+        ? &it->second
+        : nullptr;
 }
 
 void AnimationLibrary::clear()
 {
-    clips.clear();
+    m_clips.clear();
 }
 
-std::size_t
-AnimationLibrary::size() const
+std::size_t AnimationLibrary::size() const
 {
-    return clips.size();
+    return m_clips.size();
 }
 
-bool
-AnimationLibrary::empty() const
+bool AnimationLibrary::empty() const
 {
-    return clips.empty();
+    return m_clips.empty();
 }

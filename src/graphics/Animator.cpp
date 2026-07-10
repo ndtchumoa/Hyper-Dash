@@ -4,144 +4,110 @@
 #include "graphics/SpriteSheet.h"
 
 #include <algorithm>
+#include <cassert>
 
-void Animator::setLibrary(
-    const AnimationLibrary* lib)
+void Animator::setLibrary(const AnimationLibrary* library)
 {
-    library = lib;
-
+    m_library = library;
     stop();
 }
 
-const AnimationLibrary*
-Animator::getLibrary() const
+const AnimationLibrary* Animator::getLibrary() const
 {
-    return library;
+    return m_library;
 }
 
-bool Animator::play(
-    AnimationID id,
-    bool restart)
+bool Animator::play(AnimationID id, bool restart)
 {
-    if (!library)
+    if (!m_library)
         return false;
 
-    const AnimationClip* clip =
-        library->getClip(id);
+    const AnimationClip* clip = m_library->getClip(id);
 
     if (!clip)
         return false;
 
-    if (currentAnimation == id &&
-        playbackState == AnimationPlaybackState::Playing &&
+    // Đang play đúng clip này rồi, không restart → bỏ qua.
+    if (m_currentAnimation == id &&
+        m_playbackState == AnimationPlaybackState::Playing &&
         !restart)
     {
         return true;
     }
 
-    currentAnimation = id;
+    m_currentAnimation = id;
+    m_currentClip      = clip;
 
-    currentClip = clip;
+    resetPlayback();
 
-    resetPlayback(false);
-
-    playbackState =
-        AnimationPlaybackState::Playing;
+    m_playbackState = AnimationPlaybackState::Playing;
 
     return true;
 }
 
 void Animator::stop()
 {
-    currentAnimation = AnimationID::None;
-
-    currentClip = nullptr;
-
-    currentFrame = 0;
-
-    elapsedTime = 0;
-
-    playbackState =
-        AnimationPlaybackState::Stopped;
+    m_currentAnimation = AnimationID::None;
+    m_currentClip      = nullptr;
+    m_playbackState    = AnimationPlaybackState::Stopped;
+    m_currentFrame     = 0;
+    m_elapsedTime      = 0;
 }
 
 void Animator::pause()
 {
-    if (playbackState ==
-        AnimationPlaybackState::Playing)
-    {
-        playbackState =
-            AnimationPlaybackState::Paused;
-    }
+    if (m_playbackState == AnimationPlaybackState::Playing)
+        m_playbackState = AnimationPlaybackState::Paused;
 }
 
 void Animator::resume()
 {
-    if (playbackState ==
-        AnimationPlaybackState::Paused)
-    {
-        playbackState =
-            AnimationPlaybackState::Playing;
-    }
+    if (m_playbackState == AnimationPlaybackState::Paused)
+        m_playbackState = AnimationPlaybackState::Playing;
 }
 
 void Animator::restart()
 {
-    if (!currentClip)
+    if (!m_currentClip)
         return;
 
-    resetPlayback(false);
-
-    playbackState =
-        AnimationPlaybackState::Playing;
+    resetPlayback();
+    m_playbackState = AnimationPlaybackState::Playing;
 }
 
-void Animator::update(
-    std::uint32_t deltaTime)
+void Animator::update(std::uint32_t deltaTimeMs)
 {
-    if (playbackState !=
-        AnimationPlaybackState::Playing)
+    if (m_playbackState != AnimationPlaybackState::Playing)
+        return;
+
+    if (!m_currentClip || m_currentClip->empty())
+        return;
+
+    m_elapsedTime += static_cast<std::uint32_t>(
+        deltaTimeMs * m_playbackSpeed);
+
+    // Advance frame(s) berdasarkan elapsed time.
+    while (m_elapsedTime >=
+           m_currentClip->getFrame(m_currentFrame).duration)
     {
-        return;
-    }
+        m_elapsedTime -=
+            m_currentClip->getFrame(m_currentFrame).duration;
 
-    if (!currentClip)
-        return;
+        ++m_currentFrame;
 
-    if (currentClip->empty())
-        return;
-
-    elapsedTime +=
-        static_cast<std::uint32_t>(
-            deltaTime * playbackSpeed);
-
-    while (elapsedTime >=
-           currentClip
-           ->getFrame(currentFrame)
-           .duration)
-    {
-        elapsedTime -=
-            currentClip
-            ->getFrame(currentFrame)
-            .duration;
-
-        ++currentFrame;
-
-        if (currentFrame >=
-            currentClip
-            ->getFrameCount())
+        if (m_currentFrame >= m_currentClip->getFrameCount())
         {
-            if (currentClip->isLooping())
+            if (m_currentClip->isLooping())
             {
-                currentFrame = 0;
+                m_currentFrame = 0;
             }
             else
             {
-                currentFrame =
-                    currentClip
-                    ->getFrameCount() - 1;
+                // Non-looping clip: kẹt ở frame cuối.
+                m_currentFrame =
+                    m_currentClip->getFrameCount() - 1;
 
-                playbackState =
+                m_playbackState =
                     AnimationPlaybackState::Finished;
 
                 break;
@@ -150,113 +116,85 @@ void Animator::update(
     }
 }
 
-void Animator::setSpeed(
-    float speed)
+void Animator::setSpeed(float speed)
 {
-    playbackSpeed =
-        std::max(0.0f, speed);
+    m_playbackSpeed = std::max(0.0f, speed);
 }
 
 float Animator::getSpeed() const
 {
-    return playbackSpeed;
+    return m_playbackSpeed;
 }
 
-void Animator::setFlip(
-    SDL_RendererFlip f)
+void Animator::setFlip(SDL_RendererFlip flip)
 {
-    flip = f;
+    m_flip = flip;
 }
 
-SDL_RendererFlip
-Animator::getFlip() const
+SDL_RendererFlip Animator::getFlip() const
 {
-    return flip;
+    return m_flip;
 }
 
-AnimationPlaybackState
-Animator::getPlaybackState() const
+AnimationPlaybackState Animator::getPlaybackState() const
 {
-    return playbackState;
+    return m_playbackState;
 }
 
 bool Animator::isPlaying() const
 {
-    return playbackState ==
-        AnimationPlaybackState::Playing;
+    return m_playbackState == AnimationPlaybackState::Playing;
 }
 
 bool Animator::isPaused() const
 {
-    return playbackState ==
-        AnimationPlaybackState::Paused;
+    return m_playbackState == AnimationPlaybackState::Paused;
 }
 
 bool Animator::hasFinished() const
 {
-    return playbackState ==
-        AnimationPlaybackState::Finished;
+    return m_playbackState == AnimationPlaybackState::Finished;
 }
 
-AnimationID
-Animator::getCurrentAnimation() const
+AnimationID Animator::getCurrentAnimation() const
 {
-    return currentAnimation;
+    return m_currentAnimation;
 }
 
-const AnimationClip*
-Animator::getCurrentClip() const
+const AnimationClip* Animator::getCurrentClip() const
 {
-    return currentClip;
+    return m_currentClip;
 }
 
-std::size_t
-Animator::getCurrentFrameIndex() const
+std::size_t Animator::getCurrentFrameIndex() const
 {
-    return currentFrame;
+    return m_currentFrame;
 }
 
-const AnimationFrame&
-Animator::getCurrentFrame() const
+const AnimationFrame& Animator::getCurrentFrame() const
 {
-    return currentClip
-        ->getFrame(currentFrame);
+    assert(m_currentClip != nullptr);
+    return m_currentClip->getFrame(m_currentFrame);
 }
 
-SDL_Texture*
-Animator::getCurrentTexture() const
+SDL_Texture* Animator::getCurrentTexture() const
 {
-    if (!currentClip)
+    if (!m_currentClip)
         return nullptr;
 
-    const SpriteSheet* sheet =
-        currentClip
-        ->getSpriteSheet();
+    const SpriteSheet* sheet = m_currentClip->getSpriteSheet();
 
-    if (!sheet)
-        return nullptr;
-
-    return sheet->getTexture();
+    return sheet ? sheet->getTexture() : nullptr;
 }
 
-const SDL_Rect&
-Animator::getCurrentSourceRect() const
+const SDL_Rect& Animator::getCurrentSourceRect() const
 {
-    return currentClip
-        ->getFrame(currentFrame)
-        .sourceRect;
+    assert(m_currentClip != nullptr);
+    return m_currentClip->getFrame(m_currentFrame).sourceRect;
 }
 
-void Animator::resetPlayback(
-    bool resetState)
+void Animator::resetPlayback()
 {
-    currentFrame = 0;
-
-    elapsedTime = 0;
-
-    if (resetState)
-    {
-        playbackState =
-            AnimationPlaybackState::Stopped;
-    }
+    m_currentFrame = 0;
+    m_elapsedTime  = 0;
 }

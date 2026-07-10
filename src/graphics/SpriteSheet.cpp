@@ -10,21 +10,19 @@ bool SpriteSheet::create(
     if (!tex)
         return false;
 
-    texture = tex;
-
-    frameWidth = fw;
-    frameHeight = fh;
+    m_texture     = tex;
+    m_frameWidth  = fw;
+    m_frameHeight = fh;
 
     SDL_QueryTexture(
-        texture,
-        nullptr,
-        nullptr,
-        &textureWidth,
-        &textureHeight);
+        m_texture,
+        nullptr, nullptr,
+        &m_textureWidth,
+        &m_textureHeight);
 
     generateGridFrames();
 
-    return true;
+    return !m_frames.empty();
 }
 
 bool SpriteSheet::create(
@@ -36,96 +34,83 @@ bool SpriteSheet::create(
     if (!tex)
         return false;
 
-    texture = tex;
+    m_texture = tex;
 
     SDL_QueryTexture(
-        texture,
-        nullptr,
-        nullptr,
-        &textureWidth,
-        &textureHeight);
+        m_texture,
+        nullptr, nullptr,
+        &m_textureWidth,
+        &m_textureHeight);
 
-    frames = customFrames;
+    m_frames = customFrames;
 
-    return true;
+    return !m_frames.empty();
 }
 
 void SpriteSheet::generateGridFrames()
 {
-    frames.clear();
+    m_frames.clear();
 
-    if (frameWidth <= 0 || frameHeight <= 0)
+    if (m_frameWidth <= 0 || m_frameHeight <= 0)
         return;
 
-    int cols = textureWidth / frameWidth;
-    int rows = textureHeight / frameHeight;
+    const int cols = m_textureWidth  / m_frameWidth;
+    const int rows = m_textureHeight / m_frameHeight;
 
-    frames.reserve(cols * rows);
+    m_frames.reserve(
+        static_cast<std::size_t>(cols * rows));
 
     for (int y = 0; y < rows; ++y)
     {
         for (int x = 0; x < cols; ++x)
         {
-            SDL_Rect r;
-
-            r.x = x * frameWidth;
-            r.y = y * frameHeight;
-            r.w = frameWidth;
-            r.h = frameHeight;
-
-            frames.push_back(r);
+            m_frames.push_back({
+                x * m_frameWidth,
+                y * m_frameHeight,
+                m_frameWidth,
+                m_frameHeight
+            });
         }
     }
 }
 
-SDL_Texture*
-SpriteSheet::getTexture() const
+SDL_Texture* SpriteSheet::getTexture() const
 {
-    return texture;
+    return m_texture;
 }
 
-const SDL_Rect&
-SpriteSheet::getFrame(
+const SDL_Rect& SpriteSheet::getFrame(
     std::size_t index) const
 {
-    return frames.at(index);
+    return m_frames.at(index);
 }
 
-std::size_t
-SpriteSheet::getFrameCount() const
+std::size_t SpriteSheet::getFrameCount() const
 {
-    return frames.size();
+    return m_frames.size();
 }
 
-int
-SpriteSheet::getFrameWidth() const
+int SpriteSheet::getFrameWidth() const
 {
-    return frameWidth;
+    return m_frameWidth;
 }
 
-int
-SpriteSheet::getFrameHeight() const
+int SpriteSheet::getFrameHeight() const
 {
-    return frameHeight;
+    return m_frameHeight;
 }
 
-bool
-SpriteSheet::empty() const
+bool SpriteSheet::empty() const
 {
-    return texture == nullptr
-        || frames.empty();
+    return m_texture == nullptr || m_frames.empty();
 }
 
-void
-SpriteSheet::clear()
+void SpriteSheet::clear()
 {
-    texture = nullptr;
-
-    textureWidth = 0;
-    textureHeight = 0;
-
-    frameWidth = 0;
-    frameHeight = 0;
-
-    frames.clear();
+    m_texture       = nullptr;
+    m_textureWidth  = 0;
+    m_textureHeight = 0;
+    m_frameWidth    = 0;
+    m_frameHeight   = 0;
+    m_frames.clear();
 }
