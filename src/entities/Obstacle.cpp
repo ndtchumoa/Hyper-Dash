@@ -1,65 +1,54 @@
 #include "entities/Obstacle.h"
 
 Obstacle::Obstacle(
-    SDL_Texture* tex,
-    int startX,
-    int groundY,
-    float moveSpeed)
-    : texture(tex),
-      speed(moveSpeed)
+    SDL_Texture* texture,
+    int          startX,
+    int          groundY,
+    float        speedPixelsPerSecond)
+    : m_texture(texture)
+    , m_speed(speedPixelsPerSecond)
+    , m_posX(static_cast<float>(startX))
 {
-    rect =
+    m_rect =
     {
         startX,
-        groundY - HEIGHT,
-        WIDTH,
-        HEIGHT
+        groundY - kHeight,
+        kWidth,
+        kHeight
     };
 }
 
-void Obstacle::update()
+void Obstacle::update(float deltaTime)
 {
-    rect.x -= static_cast<int>(speed);
+    // Dùng float position để tránh pixel drift khi tốc độ không nguyên.
+    m_posX  -= m_speed * deltaTime;
+    m_rect.x = static_cast<int>(m_posX);
 }
 
-void Obstacle::render(SDL_Renderer* renderer)
+void Obstacle::render(SDL_Renderer* renderer) const
 {
-    if (texture)
+    if (m_texture)
     {
-        SDL_RenderCopy(
-            renderer,
-            texture,
-            nullptr,
-            &rect
-        );
+        SDL_RenderCopy(renderer, m_texture, nullptr, &m_rect);
     }
     else
     {
-        SDL_SetRenderDrawColor(
-            renderer,
-            220,
-            60,
-            60,
-            255
-        );
-
-        SDL_RenderFillRect(
-            renderer,
-            &rect
-        );
+        // Fallback placeholder khi texture chưa load được.
+        SDL_SetRenderDrawColor(renderer, 220, 60, 60, 255);
+        SDL_RenderFillRect(renderer, &m_rect);
     }
 }
 
 SDL_Rect Obstacle::getBounds() const
 {
-    return rect;
+    return m_rect;
 }
 
 bool Obstacle::hasPassedPlayer(int playerX)
 {
-    if (!passed && rect.x + rect.w < playerX)
+    if (!m_passed && m_rect.x + m_rect.w < playerX)
     {
-        passed = true;
+        m_passed = true;
         return true;
     }
 
@@ -68,5 +57,5 @@ bool Obstacle::hasPassedPlayer(int playerX)
 
 bool Obstacle::isOffScreen() const
 {
-    return rect.x + rect.w < 0;
+    return m_rect.x + m_rect.w < 0;
 }

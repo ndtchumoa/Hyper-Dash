@@ -4,13 +4,12 @@
 #include "graphics/SpriteSheet.h"
 
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 
 std::size_t CharacterRenderer::addLayer(
     const SpriteSheet* sheet,
-    RenderLayer layer,
-    SDL_Point offset)
+    RenderLayer        layer,
+    SDL_Point          offset)
 {
     SpriteLayerEntry entry;
     entry.sheet   = sheet;
@@ -18,27 +17,40 @@ std::size_t CharacterRenderer::addLayer(
     entry.offset  = offset;
     entry.visible = true;
 
-    layers.push_back(entry);
+    m_layers.push_back(entry);
 
-    // Sort by RenderLayer enum value so Body < Clothing < Hair < Weapon etc.
-    // Stable sort preserves insertion order for entries with equal layer.
+    // Sort theo RenderLayer để đảm bảo thứ tự vẽ đúng.
+    // stable_sort bảo toàn insertion order với các entry cùng layer.
     std::stable_sort(
-        layers.begin(),
-        layers.end(),
+        m_layers.begin(),
+        m_layers.end(),
         [](const SpriteLayerEntry& a, const SpriteLayerEntry& b)
         {
             return static_cast<int>(a.layer) <
                    static_cast<int>(b.layer);
         });
 
-    return layers.size() - 1;
+    // Tìm lại index thực của entry sau sort — không thể dùng size()-1
+    // vì sort có thể di chuyển entry này đến vị trí khác.
+    // So sánh bằng pointer đến sheet + layer để tìm đúng entry.
+    for (std::size_t i = 0; i < m_layers.size(); ++i)
+    {
+        if (m_layers[i].sheet == entry.sheet &&
+            m_layers[i].layer == entry.layer)
+        {
+            return i;
+        }
+    }
+
+    // Fallback không bao giờ xảy ra — entry vừa push_back chắc chắn tồn tại.
+    return m_layers.size() - 1;
 }
 
 void CharacterRenderer::setLayerVisible(
     std::size_t index,
-    bool visible)
+    bool        visible)
 {
-    if (index >= layers.size())
+    if (index >= m_layers.size())
     {
         std::cerr
             << "[CharacterRenderer] setLayerVisible: index "
@@ -46,14 +58,14 @@ void CharacterRenderer::setLayerVisible(
         return;
     }
 
-    layers[index].visible = visible;
+    m_layers[index].visible = visible;
 }
 
 void CharacterRenderer::setLayerSheet(
-    std::size_t index,
+    std::size_t        index,
     const SpriteSheet* sheet)
 {
-    if (index >= layers.size())
+    if (index >= m_layers.size())
     {
         std::cerr
             << "[CharacterRenderer] setLayerSheet: index "
@@ -61,40 +73,41 @@ void CharacterRenderer::setLayerSheet(
         return;
     }
 
-    layers[index].sheet = sheet;
+    m_layers[index].sheet = sheet;
 }
 
 void CharacterRenderer::clearLayers()
 {
-    layers.clear();
+    m_layers.clear();
 }
 
 std::size_t CharacterRenderer::layerCount() const
 {
-    return layers.size();
+    return m_layers.size();
 }
 
 void CharacterRenderer::render(
-    SDL_Renderer* renderer,
+    SDL_Renderer*   renderer,
     const Animator& animator,
     const SDL_Rect& dstRect) const
 {
     if (!renderer)
         return;
 
-    if (!animator.isPlaying() && !animator.isPaused())
+    // Render khi Playing, Paused, hoặc Finished (hiện frame cuối).
+    if (!animator.isPlaying()  &&
+        !animator.isPaused()   &&
+        !animator.hasFinished())
+    {
         return;
+    }
 
-    const SDL_Rect& src = animator.getCurrentSourceRect();
-
+    const SDL_Rect&        src  = animator.getCurrentSourceRect();
     const SDL_RendererFlip flip = animator.getFlip();
 
-    for (const auto& entry : layers)
+    for (const auto& entry : m_layers)
     {
-        if (!entry.visible)
-            continue;
-
-        if (!entry.sheet)
+        if (!entry.visible || !entry.sheet)
             continue;
 
         SDL_Texture* tex = entry.sheet->getTexture();
@@ -111,8 +124,8 @@ void CharacterRenderer::render(
             tex,
             &src,
             &dst,
-            0.0,        // angle
-            nullptr,    // center (nullptr = center of dst)
+            0.0,
+            nullptr,
             flip);
     }
 }

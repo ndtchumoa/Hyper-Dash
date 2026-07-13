@@ -1,69 +1,65 @@
 #pragma once
 
-namespace TextureID
+#include <cstdint>
+
+// TextureID định danh từng texture asset trong game.
+// Gameplay code chỉ biết ID — không biết đường dẫn file.
+// Ánh xạ ID → path nằm hoàn toàn trong ResourcePath.
+//
+// Quy ước thêm ID mới:
+//   1. Thêm enum value vào đây.
+//   2. Thêm case tương ứng trong ResourcePath::resolve().
+//   Không cần sửa bất kỳ gameplay code nào khác.
+
+enum class TextureID : std::uint16_t
 {
+    None = 0,
+
     //==============================
     // Male Character — Skin
     //==============================
 
-    inline constexpr char MALE_SKIN_1[] =
-        "assets/textures/characters/male/skin/Male Skin1.png";
-
-    inline constexpr char MALE_SKIN_2[] =
-        "assets/textures/characters/male/skin/Male Skin2.png";
-
-    inline constexpr char MALE_SKIN_3[] =
-        "assets/textures/characters/male/skin/Male Skin3.png";
+    MaleSkin1,
+    MaleSkin2,
+    MaleSkin3,
 
     //==============================
     // Male Character — Hair
     //==============================
 
-    inline constexpr char MALE_HAIR_1[] =
-        "assets/textures/characters/male/hair/Male Hair1.png";
-
-    inline constexpr char MALE_HAIR_2[] =
-        "assets/textures/characters/male/hair/Male Hair2.png";
-
-    inline constexpr char MALE_HAIR_3[] =
-        "assets/textures/characters/male/hair/Male Hair3.png";
+    MaleHair1,
+    MaleHair2,
+    MaleHair3,
 
     //==============================
     // Male Character — Clothing
     //==============================
 
-    inline constexpr char MALE_SHIRT[] =
-        "assets/textures/characters/male/clothing/Shirt v2.png";
-
-    inline constexpr char MALE_PANTS[] =
-        "assets/textures/characters/male/clothing/Pants.png";
-
-    inline constexpr char MALE_SHOES[] =
-        "assets/textures/characters/male/clothing/Shoes.png";
+    MaleShirt,
+    MalePants,
+    MaleShoes,
 
     //==============================
-    // Background
+    // Background layers
     //==============================
 
-    inline constexpr char BG_LAYER_1[] =
-        "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 1.png";
-
-    inline constexpr char BG_LAYER_2[] =
-        "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 2.png";
-
-    inline constexpr char BG_LAYER_3[] =
-        "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 3.png";
-
-    inline constexpr char BG_LAYER_4[] =
-        "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 4.png";
-
-    inline constexpr char BG_LAYER_5[] =
-        "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 5.png";
+    BgLayer1,
+    BgLayer2,
+    BgLayer3,
+    BgLayer4,
+    BgLayer5,
 
     //==============================
     // Obstacles
     //==============================
 
-    inline constexpr char OBSTACLE_ORE[] =
-        "assets/textures/background/Ores.png";
-}
+    ObstacleOre,
+
+    //==============================
+    // UI
+    //==============================
+
+    UiButton,
+
+    Count   // sentinel — số lượng ID, không dùng làm ID thực
+};

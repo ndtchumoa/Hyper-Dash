@@ -1,114 +1,106 @@
 #include "graphics/Background.h"
 
-#include "systems/AssetManager.h"
+#include "resources/ResourceManager.h"
+#include "resources/TextureID.h"
 
-bool Background::init(AssetManager& assets)
+bool Background::init(ResourceManager& resources)
 {
-    layers.clear();
+    m_layers.clear();
+    m_scrollMultiplier = 1.0f;
 
-    const struct
+    struct LayerCfg
     {
-        const char* path;
-        float speed;
-    }
-    configs[] =
+        TextureID id;
+        float     baseSpeed;   // pixels/giây khi multiplier = 1
+    };
+
+    const LayerCfg configs[] =
     {
-        {
-            "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 1.png",
-            0.2f
-        },
-
-        {
-            "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 2.png",
-            0.4f
-        },
-
-        {
-            "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 3.png",
-            0.7f
-        },
-
-        {
-            "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 4.png",
-            1.0f
-        },
-
-        {
-            "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 5.png",
-            1.4f
-        }
+        { TextureID::BgLayer1, 12.0f },
+        { TextureID::BgLayer2, 24.0f },
+        { TextureID::BgLayer3, 42.0f },
+        { TextureID::BgLayer4, 60.0f },
+        { TextureID::BgLayer5, 84.0f },
     };
 
     for (const auto& cfg : configs)
     {
-        Layer layer;
+        SDL_Texture* tex = resources.get(cfg.id);
 
-        layer.texture = assets.getTexture(cfg.path);
-
-        if (!layer.texture)
+        if (!tex)
             continue;
 
-        layer.speed = cfg.speed;
+        Layer layer;
+        layer.texture   = tex;
+        layer.baseSpeed = cfg.baseSpeed;
+        layer.scroll    = 0.0f;
 
         SDL_QueryTexture(
-            layer.texture,
-            nullptr,
-            nullptr,
-            &layer.width,
-            &layer.height);
+            tex, nullptr, nullptr,
+            &layer.width, &layer.height);
 
-        layers.push_back(layer);
+        m_layers.push_back(layer);
     }
 
-    return !layers.empty();
+    return !m_layers.empty();
 }
 
-void Background::update()
+void Background::update(float deltaTime)
 {
-    for (auto& layer : layers)
+    for (auto& layer : m_layers)
     {
-        layer.scroll += layer.speed;
+        // Tốc độ thực = baseSpeed * multiplier.
+        // baseSpeed không bao giờ thay đổi — chỉ multiplier thay đổi.
+        const float effectiveSpeed =
+            layer.baseSpeed * m_scrollMultiplier;
 
-        if (layer.scroll >= layer.width)
-            layer.scroll = 0.0f;
+        layer.scroll += effectiveSpeed * deltaTime;
+
+        if (layer.scroll >= static_cast<float>(layer.width))
+            layer.scroll -= static_cast<float>(layer.width);
     }
 }
 
-void Background::render(SDL_Renderer* renderer)
+void Background::render(SDL_Renderer* renderer) const
 {
-    for (auto& layer : layers)
+    for (const auto& layer : m_layers)
     {
-        SDL_Rect dst1 =
+        const int scrollX = static_cast<int>(layer.scroll);
+
+        const SDL_Rect dst1 =
         {
-            -(int)layer.scroll,
+            -scrollX,
             0,
             layer.width,
-            720
+            kRenderHeight
         };
 
-        SDL_Rect dst2 =
+        const SDL_Rect dst2 =
         {
-            dst1.x + layer.width,
+            -scrollX + layer.width,
             0,
             layer.width,
-            720
+            kRenderHeight
         };
 
-        SDL_RenderCopy(
-            renderer,
-            layer.texture,
-            nullptr,
-            &dst1);
-
-        SDL_RenderCopy(
-            renderer,
-            layer.texture,
-            nullptr,
-            &dst2);
+        SDL_RenderCopy(renderer, layer.texture, nullptr, &dst1);
+        SDL_RenderCopy(renderer, layer.texture, nullptr, &dst2);
     }
 }
 
 void Background::clean()
 {
-    layers.clear();
+    // Texture thuộc ResourceManager — không destroy ở đây.
+    m_layers.clear();
+}
+
+void Background::setScrollMultiplier(float multiplier)
+{
+    // Clamp tránh multiplier âm hoặc bằng 0 gây background đứng yên.
+    m_scrollMultiplier = multiplier > 0.0f ? multiplier : 1.0f;
+}
+
+float Background::getScrollMultiplier() const
+{
+    return m_scrollMultiplier;
 }

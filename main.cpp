@@ -1,22 +1,25 @@
 #define SDL_MAIN_HANDLED
 
-#include "Game.h"
+#include "engine/Game.h"
+
 #include <iostream>
-#include <algorithm>
 #include <cstdlib>
-#include <cmath>
+#include <ctime>
 
 int main()
 {
+    // Seed rand() cho ObstacleManager spawn interval.
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
+
     Game game;
 
     if (!game.init())
     {
-        std::cout << "Init failed!\n";
-        std::cin.get();
+        std::cerr << "[main] Game init failed.\n";
         return 1;
     }
 
     game.run();
+
     return 0;
 }

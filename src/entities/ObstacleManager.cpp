@@ -1,102 +1,100 @@
 #include "entities/ObstacleManager.h"
 
-#include "entities/Obstacle.h"
-#include "systems/AssetManager.h"
+#include "resources/ResourceManager.h"
+#include "resources/TextureID.h"
 
 #include <algorithm>
 #include <cstdlib>
 
 bool ObstacleManager::init(
-    AssetManager& assets,
-    int ground,
-    int screenW)
+    ResourceManager& resources,
+    int              groundY,
+    int              screenWidth)
 {
-    groundY = ground;
+    m_groundY     = groundY;
+    m_screenWidth = screenWidth;
 
-    screenWidth = screenW;
-
-    obstacleTexture =
-        assets.getTexture(
-            "assets/textures/obstacle/Ores.png"
-        );
+    m_obstacleTexture = resources.get(TextureID::ObstacleOre);
 
     reset();
 
-    return obstacleTexture != nullptr;
+    return true;
 }
 
 void ObstacleManager::reset()
 {
-    obstacles.clear();
+    m_obstacles.clear();
+    m_spawnTimer    = 0.0f;
+    m_spawnInterval = kMaxSpawnInterval;
+    m_speed         = 360.0f;
+}
 
-    spawnTimer = 0;
+void ObstacleManager::setSpeed(float pixelsPerSecond)
+{
+    m_speed = pixelsPerSecond;
+}
 
-    spawnInterval = getRandomSpawnTime();
+void ObstacleManager::setSpawnInterval(float seconds)
+{
+    // Clamp trong ObstacleManager để tránh giá trị phi lý
+    // dù DifficultyManager đã clamp ở phía nó.
+    m_spawnInterval =
+        std::clamp(seconds, kMinSpawnInterval, kMaxSpawnInterval);
+}
 
-    speed = 6.0f;
+float ObstacleManager::getSpeed() const
+{
+    return m_speed;
+}
+
+float ObstacleManager::getSpawnInterval() const
+{
+    return m_spawnInterval;
 }
 
 void ObstacleManager::spawn()
 {
-    obstacles.emplace_back(
-        obstacleTexture,
-        screenWidth,
-        groundY,
-        speed
-    );
+    m_obstacles.emplace_back(
+        m_obstacleTexture,
+        m_screenWidth,
+        m_groundY,
+        m_speed);
 }
 
-void ObstacleManager::update()
+void ObstacleManager::update(float deltaTime)
 {
-    spawnTimer++;
+    m_spawnTimer += deltaTime;
 
-    if (spawnTimer >= spawnInterval)
+    if (m_spawnTimer >= m_spawnInterval)
     {
         spawn();
-
-        spawnTimer = 0;
-
-        spawnInterval = getRandomSpawnTime();
+        m_spawnTimer = 0.0f;
+        // Không reset spawnInterval — DifficultyManager điều khiển
     }
 
-    for (auto& obstacle : obstacles)
-    {
-        obstacle.update();
-    }
+    for (auto& obstacle : m_obstacles)
+        obstacle.update(deltaTime);
 
-    obstacles.erase(
-        std::remove_if(
-            obstacles.begin(),
-            obstacles.end(),
-            [](const Obstacle& obstacle)
-            {
-                return obstacle.isOffScreen();
-            }),
-        obstacles.end());
+    std::erase_if(
+        m_obstacles,
+        [](const Obstacle& o) { return o.isOffScreen(); });
 }
 
-void ObstacleManager::render(SDL_Renderer* renderer)
+void ObstacleManager::render(SDL_Renderer* renderer) const
 {
-    for (auto& obstacle : obstacles)
-    {
+    for (const auto& obstacle : m_obstacles)
         obstacle.render(renderer);
-    }
 }
 
 bool ObstacleManager::checkCollision(
-    const SDL_Rect& playerBounds)
+    const SDL_Rect& playerBounds) const
 {
-    for (auto& obstacle : obstacles)
+    for (const auto& obstacle : m_obstacles)
     {
-        SDL_Rect obstacleBounds =
-            obstacle.getBounds();
+        SDL_Rect bounds = obstacle.getBounds();
 
-        if (SDL_HasIntersection(
-                &playerBounds,
-                &obstacleBounds))
-        {
+        if (SDL_HasIntersection(&playerBounds, &bounds))
             return true;
-        }
     }
 
     return false;
@@ -106,18 +104,21 @@ bool ObstacleManager::checkPassed(int playerX)
 {
     bool scored = false;
 
-    for (auto& obstacle : obstacles)
+    for (auto& obstacle : m_obstacles)
     {
         if (obstacle.hasPassedPlayer(playerX))
-        {
             scored = true;
-        }
     }
 
     return scored;
 }
 
-int ObstacleManager::getRandomSpawnTime() const
+float ObstacleManager::getRandomSpawnInterval() const
 {
-    return 90 + std::rand() % 70;
+    const float range = kMaxSpawnInterval - kMinSpawnInterval;
+    const float r     =
+        static_cast<float>(std::rand()) /
+        static_cast<float>(RAND_MAX);
+
+    return kMinSpawnInterval + r * range;
 }

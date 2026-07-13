@@ -1,7 +1,8 @@
 #pragma once
 
-#include <memory>
 #include <SDL2/SDL.h>
+
+#include <memory>
 
 class Scene;
 
@@ -19,5 +20,5 @@ public:
 
 private:
 
-    std::unique_ptr<Scene> currentScene;
+    std::unique_ptr<Scene> m_currentScene;
 };

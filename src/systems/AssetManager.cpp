@@ -7,109 +7,102 @@ AssetManager::~AssetManager()
     clean();
 }
 
-bool AssetManager::init(SDL_Renderer* r)
+bool AssetManager::init(SDL_Renderer* renderer)
 {
-    renderer = r;
-    return renderer != nullptr;
+    m_renderer = renderer;
+    return m_renderer != nullptr;
 }
 
-bool AssetManager::loadTexture(const std::string& id,
-                               const std::string& path)
+bool AssetManager::loadTexture(
+    const std::string& id,
+    const std::string& path)
 {
-    if (!renderer)
+    if (!m_renderer)
     {
         std::cerr << "[AssetManager] Renderer not initialized.\n";
         return false;
     }
 
+    // Cache hit — không load lại.
     if (hasTexture(id))
-    {
         return true;
-    }
 
-    SDL_Texture* texture = IMG_LoadTexture(renderer, path.c_str());
+    SDL_Texture* texture =
+        IMG_LoadTexture(m_renderer, path.c_str());
 
     if (!texture)
     {
         std::cerr
             << "[AssetManager] Failed to load texture:\n"
-            << "ID   : " << id << '\n'
-            << "Path : " << path << '\n'
-            << "SDL  : " << IMG_GetError() << "\n";
-
+            << "  ID   : " << id   << '\n'
+            << "  Path : " << path << '\n'
+            << "  SDL  : " << IMG_GetError() << '\n';
         return false;
     }
 
-    textureCache[id] = texture;
-    pathLookup[path] = id;
+    m_textureCache[id]   = texture;
+    m_pathLookup[path]   = id;
 
     return true;
 }
 
-SDL_Texture* AssetManager::getTexture(const std::string& id)
+SDL_Texture* AssetManager::getTexture(
+    const std::string& id) const
 {
-    auto it = textureCache.find(id);
+    auto it = m_textureCache.find(id);
 
-    if (it == textureCache.end())
-        return nullptr;
-
-    return it->second;
+    return (it != m_textureCache.end())
+        ? it->second
+        : nullptr;
 }
 
 bool AssetManager::hasTexture(const std::string& id) const
 {
-    return textureCache.find(id) != textureCache.end();
+    return m_textureCache.contains(id);
 }
 
 void AssetManager::unloadTexture(const std::string& id)
 {
-    auto it = textureCache.find(id);
+    auto it = m_textureCache.find(id);
 
-    if (it == textureCache.end())
+    if (it == m_textureCache.end())
         return;
 
     SDL_DestroyTexture(it->second);
+    m_textureCache.erase(it);
 
-    textureCache.erase(it);
-
-    for (auto itr = pathLookup.begin(); itr != pathLookup.end();)
-    {
-        if (itr->second == id)
-            itr = pathLookup.erase(itr);
-        else
-            ++itr;
-    }
+    // Xoá luôn path lookup entry tương ứng.
+    std::erase_if(
+        m_pathLookup,
+        [&id](const auto& pair) { return pair.second == id; });
 }
 
-SDL_Texture* AssetManager::getTextureByPath(const std::string& path)
+SDL_Texture* AssetManager::getTextureByPath(
+    const std::string& path)
 {
-    auto lookup = pathLookup.find(path);
+    // Nếu đã load qua path này trước đó → trả về từ cache.
+    auto it = m_pathLookup.find(path);
 
-    if (lookup != pathLookup.end())
-    {
-        return getTexture(lookup->second);
-    }
+    if (it != m_pathLookup.end())
+        return getTexture(it->second);
 
+    // Chưa có → load mới, dùng path làm id.
     if (!loadTexture(path, path))
-    {
         return nullptr;
-    }
 
     return getTexture(path);
 }
 
 void AssetManager::clearTextures()
 {
-    for (auto& texture : textureCache)
+    for (auto& [id, tex] : m_textureCache)
     {
-        if (texture.second)
-        {
-            SDL_DestroyTexture(texture.second);
-        }
+        if (tex)
+            SDL_DestroyTexture(tex);
     }
 
-    textureCache.clear();
-    pathLookup.clear();
+    m_textureCache.clear();
+    m_pathLookup.clear();
 }
 
 void AssetManager::clear()
@@ -120,5 +113,5 @@ void AssetManager::clear()
 void AssetManager::clean()
 {
     clearTextures();
-    renderer = nullptr;
+    m_renderer = nullptr;
 }

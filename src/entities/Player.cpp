@@ -1,109 +1,83 @@
 #include "entities/Player.h"
 
-#include "systems/AssetManager.h"
+#include "resources/ResourceManager.h"
 #include "resources/TextureID.h"
 
 #include <iostream>
 
-// ─────────────────────────────────────────────────────────────
-//  Helpers — xây AnimationClip từ một spritesheet grid
-//  Row 0 = Idle (13 frames), Row 1 = Run (13 frames),
-//  Row 2 = Jump (13 frames)  — theo spritesheet male character
-//  Mỗi frame: 64x64px, duration 80ms
-// ─────────────────────────────────────────────────────────────
-
-namespace
+static AnimationClip buildRowClip(
+    const SpriteSheet& sheet,
+    int                row,
+    int                frameCount,
+    std::uint32_t      frameDurationMs,
+    bool               loop)
 {
-    // Tạo clip từ một hàng cụ thể trên spritesheet.
-    // sheet phải đã được create() thành công trước khi gọi hàm này.
-    AnimationClip makeRowClip(
-        const SpriteSheet& sheet,
-        int row,
-        int frameCount,
-        std::uint32_t frameDurationMs,
-        bool loop)
+    AnimationClip clip;
+    clip.setSpriteSheet(&sheet);
+    clip.setLoop(loop);
+
+    for (int col = 0; col < frameCount; ++col)
     {
-        AnimationClip clip;
-        clip.setSpriteSheet(&sheet);
-        clip.setLoop(loop);
+        const auto index =
+            static_cast<std::size_t>(row * frameCount + col);
 
-        const int cols = static_cast<int>(sheet.getFrameCount())
-                       / (sheet.getFrameHeight() > 0
-                          ? 1
-                          : 1); // guard
-
-        // Sheet đã tự cắt theo grid — frame index = row * cols + col
-        // Tổng số cột = textureWidth / frameWidth (được tính bởi SpriteSheet)
-        // Chúng ta cần số cột; tính lại từ frameCount đã biết.
-        for (int col = 0; col < frameCount; ++col)
+        if (index >= sheet.getFrameCount())
         {
-            const std::size_t frameIndex =
-                static_cast<std::size_t>(row * frameCount + col);
-
-            if (frameIndex >= sheet.getFrameCount())
-            {
-                std::cerr
-                    << "[Player] makeRowClip: frameIndex "
-                    << frameIndex << " out of range ("
-                    << sheet.getFrameCount() << " frames total).\n";
-                break;
-            }
-
-            AnimationFrame frame;
-            frame.sourceRect = sheet.getFrame(frameIndex);
-            frame.duration   = frameDurationMs;
-
-            clip.addFrame(frame);
+            std::cerr
+                << "[Player] buildRowClip: frameIndex "
+                << index << " out of range.\n";
+            break;
         }
 
-        return clip;
+        AnimationFrame frame;
+        frame.sourceRect = sheet.getFrame(index);
+        frame.duration   = frameDurationMs;
+        clip.addFrame(frame);
     }
+
+    return clip;
 }
 
-// ─────────────────────────────────────────────────────────────
-
-bool Player::init(AssetManager& assets, int ground)
+bool Player::init(ResourceManager& resources, int groundY)
 {
-    groundY = ground;
+    m_groundY = groundY;
 
     //----------------------------------------------------------
-    // 1. Load textures và build SpriteSheets
-    //    Mỗi layer (skin, shirt, pants, hair, shoes) dùng
-    //    cùng layout frame — đây là quy ước của bộ asset này.
+    // 1. Load textures
     //----------------------------------------------------------
 
     struct LayerDef
     {
-        const char*   texID;
-        SpriteSheet*  sheet;
+        TextureID    id;
+        SpriteSheet* sheet;
     };
 
     const LayerDef layerDefs[] =
     {
-        { TextureID::MALE_SKIN_1,  &skinSheet  },
-        { TextureID::MALE_SHIRT,   &shirtSheet },
-        { TextureID::MALE_PANTS,   &pantsSheet },
-        { TextureID::MALE_HAIR_1,  &hairSheet  },
-        { TextureID::MALE_SHOES,   &shoesSheet },
+        { TextureID::MaleSkin1, &m_skinSheet  },
+        { TextureID::MaleShirt, &m_shirtSheet },
+        { TextureID::MalePants, &m_pantsSheet },
+        { TextureID::MaleHair1, &m_hairSheet  },
+        { TextureID::MaleShoes, &m_shoesSheet },
     };
 
     for (const auto& def : layerDefs)
     {
-        SDL_Texture* tex = assets.getTextureByPath(def.texID);
+        SDL_Texture* tex = resources.get(def.id);
 
         if (!tex)
         {
             std::cerr
-                << "[Player] Failed to load texture: "
-                << def.texID << '\n';
+                << "[Player] Failed to get TextureID "
+                << static_cast<int>(def.id) << '\n';
             return false;
         }
 
-        if (!def.sheet->create(tex, FRAME_WIDTH, FRAME_HEIGHT))
+        if (!def.sheet->create(tex, kFrameWidth, kFrameHeight))
         {
             std::cerr
-                << "[Player] Failed to create SpriteSheet for: "
-                << def.texID << '\n';
+                << "[Player] Failed to create SpriteSheet for TextureID "
+                << static_cast<int>(def.id) << '\n';
             return false;
         }
     }
@@ -112,192 +86,170 @@ bool Player::init(AssetManager& assets, int ground)
     // 2. Build AnimationLibrary
     //----------------------------------------------------------
 
-    if (!buildAnimationLibrary(assets))
+    if (!buildAnimationLibrary())
         return false;
 
     //----------------------------------------------------------
     // 3. Setup Animator
+    //    Spritesheet hướng ngược chiều game → flip horizontal.
     //----------------------------------------------------------
 
-    animator.setLibrary(&animLibrary);
-    animator.play(AnimationID::PlayerRun);
+    m_animator.setLibrary(&m_animLibrary);
+    m_animator.setFlip(SDL_FLIP_HORIZONTAL);
+    m_animator.play(AnimationID::PlayerRun);
 
     //----------------------------------------------------------
-    // 4. Setup CharacterRenderer — thứ tự layer theo RenderLayer enum
-    //    Body < Clothing (shirt) < Clothing (pants) < Hair < ...
+    // 4. Setup AnimationController
     //----------------------------------------------------------
 
-    characterRenderer.clearLayers();
-    characterRenderer.addLayer(&skinSheet,  RenderLayer::Body);
-    characterRenderer.addLayer(&pantsSheet, RenderLayer::Clothing);
-    characterRenderer.addLayer(&shirtSheet, RenderLayer::Clothing);
-    characterRenderer.addLayer(&shoesSheet, RenderLayer::Clothing);
-    characterRenderer.addLayer(&hairSheet,  RenderLayer::Hair);
+    m_animController.setAnimator(&m_animator);
 
     //----------------------------------------------------------
-    // 5. Vị trí ban đầu
+    // 5. Setup CharacterRenderer
     //----------------------------------------------------------
 
-    dstRect = { 120, groundY - HEIGHT, WIDTH, HEIGHT };
-    velocityY = 0.0f;
-    onGround  = true;
-    state     = PlayerState::Run;
+    m_characterRenderer.clearLayers();
+    m_characterRenderer.addLayer(&m_skinSheet,  RenderLayer::Body);
+    m_characterRenderer.addLayer(&m_pantsSheet, RenderLayer::Clothing);
+    m_characterRenderer.addLayer(&m_shirtSheet, RenderLayer::Clothing);
+    m_characterRenderer.addLayer(&m_shoesSheet, RenderLayer::Clothing);
+    m_characterRenderer.addLayer(&m_hairSheet,  RenderLayer::Hair);
+
+    //----------------------------------------------------------
+    // 6. Initial position
+    //----------------------------------------------------------
+
+    m_dstRect   = { 120, m_groundY - kHeight, kWidth, kHeight };
+    m_velocityY = 0.0f;
+    m_onGround  = true;
+    m_state     = PlayerState::Run;
 
     return true;
 }
 
-bool Player::buildAnimationLibrary(AssetManager& /*assets*/)
+bool Player::buildAnimationLibrary()
 {
-    // Spritesheet male character layout:
-    //   Row 0 — Idle   : 13 frames
-    //   Row 1 — Run    : 13 frames
-    //   Row 2 — Jump   : 13 frames
-    //
-    // Tất cả layer (skin/shirt/pants/hair/shoes) dùng cùng layout.
-    // Animation data được build từ skinSheet vì tất cả sheet có cùng frame grid.
-
-    constexpr int   FRAMES_PER_ROW   = 13;
-    constexpr std::uint32_t FRAME_MS = 80; // ms/frame ~ 12.5 fps
-
     struct ClipDef
     {
         AnimationID id;
         int         row;
-        int         count;
-        std::uint32_t duration;
         bool        loop;
     };
 
     const ClipDef clipDefs[] =
     {
-        { AnimationID::PlayerIdle,  0, FRAMES_PER_ROW, FRAME_MS,      true  },
-        { AnimationID::PlayerRun,   1, FRAMES_PER_ROW, FRAME_MS,      true  },
-        { AnimationID::PlayerJump,  2, FRAMES_PER_ROW, FRAME_MS,      false },
+        { AnimationID::PlayerIdle, 0, true  },
+        { AnimationID::PlayerRun,  1, true  },
+        { AnimationID::PlayerJump, 2, false },
+        { AnimationID::PlayerFall, 2, false },
     };
 
     for (const auto& def : clipDefs)
     {
-        AnimationClip clip = makeRowClip(
-            skinSheet,       // chỉ dùng để lấy frame rects; SpriteSheet khác dùng chung rect
+        AnimationClip clip = buildRowClip(
+            m_skinSheet,
             def.row,
-            def.count,
-            def.duration,
+            kFramesPerRow,
+            kFrameDurationMs,
             def.loop);
 
         if (clip.empty())
         {
             std::cerr
-                << "[Player] buildAnimationLibrary: clip empty for AnimationID "
+                << "[Player] Empty clip for AnimationID "
                 << static_cast<int>(def.id) << '\n';
             return false;
         }
 
-        // Mỗi clip cần biết SpriteSheet của chính nó để CharacterRenderer
-        // lấy đúng texture. Nhưng CharacterRenderer lấy texture từ SpriteLayerEntry,
-        // không từ clip — clip chỉ cần sourceRect. Vì tất cả layer có cùng grid,
-        // việc setSpriteSheet(&skinSheet) ở đây đủ để Animator trả về sourceRect đúng.
-        clip.setSpriteSheet(&skinSheet);
-
-        animLibrary.addClip(def.id, clip);
+        m_animLibrary.addClip(def.id, clip);
     }
 
     return true;
 }
 
-// ─────────────────────────────────────────────────────────────
-
 void Player::update(float deltaTime)
 {
     updatePhysics(deltaTime);
     updateState();
-    updateAnimation();
-
-    animator.update(
+    m_animController.update(m_state);
+    m_animator.update(
         static_cast<std::uint32_t>(deltaTime * 1000.0f));
 }
 
 void Player::updatePhysics(float deltaTime)
 {
-    // Variable timestep: velocityY tính bằng pixels/giây
-    velocityY += GRAVITY * deltaTime;
+    // Dùng fall gravity cao hơn khi đang rơi xuống.
+    // Tạo cảm giác jump snappy: lên nhanh, xuống nhanh hơn.
+    // Tránh cảm giác "float" của gravity tuyến tính thuần tuý.
+    const float gravity = (m_velocityY >= 0.0f)
+        ? kFallGravity
+        : kGravity;
 
-    dstRect.y += static_cast<int>(velocityY * deltaTime);
+    m_velocityY += gravity * deltaTime;
 
-    if (dstRect.y >= groundY - HEIGHT)
+    m_dstRect.y +=
+        static_cast<int>(m_velocityY * deltaTime);
+
+    if (m_dstRect.y >= m_groundY - kHeight)
     {
-        dstRect.y = groundY - HEIGHT;
-        velocityY = 0.0f;
-        onGround  = true;
+        m_dstRect.y = m_groundY - kHeight;
+        m_velocityY = 0.0f;
+        m_onGround  = true;
     }
 }
 
 void Player::updateState()
 {
-    if (!onGround)
+    if (!m_onGround)
     {
-        state = (velocityY < 0.0f)
+        m_state = (m_velocityY < 0.0f)
             ? PlayerState::Jump
             : PlayerState::Fall;
     }
     else
     {
-        state = PlayerState::Run;
+        m_state = PlayerState::Run;
     }
 }
 
-void Player::updateAnimation()
+void Player::render(SDL_Renderer* renderer) const
 {
-    // Chuyển state → AnimationID và gọi animator.play().
-    // Animator tự xử lý việc không restart nếu clip đang chạy.
-    switch (state)
-    {
-    case PlayerState::Idle:
-        animator.play(AnimationID::PlayerIdle);
-        break;
-
-    case PlayerState::Run:
-        animator.play(AnimationID::PlayerRun);
-        break;
-
-    case PlayerState::Jump:
-    case PlayerState::Fall:
-        // Jump clip không loop — khi hết nó ở trạng thái Finished,
-        // animator.play() với restart=false sẽ không làm gì thêm.
-        animator.play(AnimationID::PlayerJump);
-        break;
-    }
-}
-
-// ─────────────────────────────────────────────────────────────
-
-void Player::render(SDL_Renderer* renderer)
-{
-    characterRenderer.render(renderer, animator, dstRect);
+    m_characterRenderer.render(renderer, m_animator, m_dstRect);
 }
 
 void Player::jump()
 {
-    if (!onGround)
+    if (!m_onGround)
         return;
 
-    velocityY = JUMP_FORCE;
-    onGround  = false;
-
-    // Restart jump animation từ đầu mỗi lần nhảy.
-    animator.play(AnimationID::PlayerJump, /*restart=*/true);
+    m_velocityY = kJumpForce;
+    m_onGround  = false;
 }
 
 void Player::reset()
 {
-    dstRect   = { 120, groundY - HEIGHT, WIDTH, HEIGHT };
-    velocityY = 0.0f;
-    onGround  = true;
-    state     = PlayerState::Run;
+    m_dstRect   = { 120, m_groundY - kHeight, kWidth, kHeight };
+    m_velocityY = 0.0f;
+    m_onGround  = true;
+    m_state     = PlayerState::Run;
 
-    animator.play(AnimationID::PlayerRun, /*restart=*/true);
+    m_animator.play(AnimationID::PlayerRun, true);
 }
 
 SDL_Rect Player::getBounds() const
 {
-    return dstRect;
+    // Hitbox nhỏ hơn dstRect để loại bỏ transparent padding.
+    // Inset từ 4 phía: trái/phải kHitboxInsetX, trên kHitboxInsetY.
+    return SDL_Rect
+    {
+        m_dstRect.x + kHitboxInsetX,
+        m_dstRect.y + kHitboxInsetY,
+        m_dstRect.w - kHitboxInsetX * 2,
+        m_dstRect.h - kHitboxInsetY
+    };
+}
+
+PlayerState Player::getState() const
+{
+    return m_state;
 }

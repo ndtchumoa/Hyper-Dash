@@ -5,7 +5,6 @@ project(HyperDash LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# SDL2 via vcpkg
 find_package(SDL2       CONFIG REQUIRED)
 find_package(SDL2_image CONFIG REQUIRED)
 find_package(SDL2_ttf   CONFIG REQUIRED)
@@ -14,56 +13,64 @@ find_package(SDL2_mixer CONFIG REQUIRED)
 add_executable(HyperDash
     main.cpp
 
-    # Engine
+    # ── Engine ────────────────────────────────────────────────
     src/engine/Game.cpp
-    src/engine/Scene.cpp
     src/engine/SceneManager.cpp
+    # src/engine/Scene.cpp       — header-only base class, no impl needed
+    # src/engine/Config.cpp      — future: game config system
+    # src/engine/Entity.cpp      — future: base entity class
 
-    # Entities
+    # ── Entities ──────────────────────────────────────────────
     src/entities/Obstacle.cpp
     src/entities/ObstacleManager.cpp
     src/entities/Player.cpp
+    # src/entities/Character.cpp — future: shared character base
+    # src/entities/Enemy.cpp     — future: enemy types
+    # src/entities/Pickup.cpp    — future: collectible items
 
-    # Graphics
-    src/graphics/Animation.cpp
+    # ── Graphics ──────────────────────────────────────────────
     src/graphics/AnimationClip.cpp
     src/graphics/AnimationController.cpp
     src/graphics/AnimationLibrary.cpp
     src/graphics/Animator.cpp
     src/graphics/Background.cpp
-    src/graphics/Camera.cpp
     src/graphics/CharacterRenderer.cpp
-    src/graphics/ParticleSystem.cpp
     src/graphics/SpriteSheet.cpp
+    # src/graphics/Camera.cpp        — future: camera system
+    # src/graphics/ParticleSystem.cpp — future: particle effects
+    # NOTE: src/graphics/Animation.cpp đã bị xóa (hệ thống cũ)
 
-    # Resources
+    # ── Resources ─────────────────────────────────────────────
     src/resources/ResourceLoader.cpp
     src/resources/ResourcePath.cpp
+    src/resources/ResourceManager.cpp
 
-    # Scenes
+    # ── Scenes ────────────────────────────────────────────────
     src/scenes/GameOverScene.cpp
     src/scenes/MenuScene.cpp
     src/scenes/PlayScene.cpp
 
-    # Systems
-    src/systems/AssetManager.cpp
-    src/systems/AudioManager.cpp
-    src/systems/CollisionSystem.cpp
-    src/systems/InputSystem.cpp
-    src/systems/SaveSystem.cpp
+    # ── Systems ───────────────────────────────────────────────
+    src/systems/DifficultyManager.cpp
+    # src/systems/AudioManager.cpp    — future: sound/music
+    # src/systems/CollisionSystem.cpp — future: physics collision
+    # src/systems/InputSystem.cpp     — future: input mapping
+    # src/systems/SaveSystem.cpp      — future: save/load
+    # NOTE: src/systems/AssetManager.cpp đã bị xóa (replaced by ResourceManager)
+    # NOTE: src/systems/Animation.cpp và AnimationManager.cpp đã bị xóa
 
-    # UI
+    # ── UI ────────────────────────────────────────────────────
     src/ui/Button.cpp
-    src/ui/HUD.cpp
     src/ui/Label.cpp
-    src/ui/ProgressBar.cpp
     src/ui/Score.cpp
+    # src/ui/HUD.cpp         — future: heads-up display
+    # src/ui/ProgressBar.cpp — future: health/stamina bar
 
-    # World
-    src/world/ParallaxLayer.cpp
-    src/world/SpawnManager.cpp
-    src/world/TileMap.cpp
-    src/world/World.cpp
+    # ── World ─────────────────────────────────────────────────
+    # src/world/ParallaxLayer.cpp — future: advanced parallax
+    # src/world/SpawnManager.cpp  — future: entity spawning
+    # src/world/TileMap.cpp       — future: tile-based levels
+    # src/world/World.cpp         — future: world container
 )
 
 target_include_directories(HyperDash PRIVATE

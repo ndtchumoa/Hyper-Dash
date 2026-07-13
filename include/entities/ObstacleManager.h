@@ -1,48 +1,61 @@
 #pragma once
 
+#include "entities/Obstacle.h"
+
 #include <SDL2/SDL.h>
 
 #include <vector>
 
-class AssetManager;
-class Obstacle;
+class ResourceManager;
 
 class ObstacleManager
 {
 public:
+
     bool init(
-        AssetManager& assets,
-        int groundY,
-        int screenWidth
-    );
+        ResourceManager& resources,
+        int              groundY,
+        int              screenWidth);
 
-    void update();
+    void update(float deltaTime);
 
-    void render(SDL_Renderer* renderer);
+    void render(SDL_Renderer* renderer) const;
 
     void reset();
 
-    bool checkCollision(const SDL_Rect& playerBounds);
+    bool checkCollision(const SDL_Rect& playerBounds) const;
 
     bool checkPassed(int playerX);
 
+    //--------------------------------------------------
+    // Difficulty setters — gọi từ PlayScene mỗi frame
+    //--------------------------------------------------
+
+    void setSpeed(float pixelsPerSecond);
+
+    void setSpawnInterval(float seconds);
+
+    float getSpeed()         const;
+    float getSpawnInterval() const;
+
 private:
-    void spawn();
 
-    int getRandomSpawnTime() const;
+    void  spawn();
+    float getRandomSpawnInterval() const;
 
 private:
-    std::vector<Obstacle> obstacles;
 
-    SDL_Texture* obstacleTexture = nullptr;
+    std::vector<Obstacle> m_obstacles;
 
-    int groundY = 0;
+    SDL_Texture* m_obstacleTexture = nullptr;
 
-    int screenWidth = 0;
+    int   m_groundY     = 0;
+    int   m_screenWidth = 0;
 
-    int spawnTimer = 0;
+    float m_spawnTimer    = 0.0f;
+    float m_spawnInterval = 2.0f;
+    float m_speed         = 360.0f;
 
-    int spawnInterval = 120;
-
-    float speed = 6.0f;
+    static constexpr float kMinSpawnInterval = 0.8f;
+    static constexpr float kMaxSpawnInterval = 2.667f;
 };
