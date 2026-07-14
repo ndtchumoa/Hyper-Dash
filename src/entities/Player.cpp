@@ -178,24 +178,26 @@ void Player::update(float deltaTime)
 
 void Player::updatePhysics(float deltaTime)
 {
-    // Dùng fall gravity cao hơn khi đang rơi xuống.
-    // Tạo cảm giác jump snappy: lên nhanh, xuống nhanh hơn.
-    // Tránh cảm giác "float" của gravity tuyến tính thuần tuý.
     const float gravity = (m_velocityY >= 0.0f)
         ? kFallGravity
         : kGravity;
 
     m_velocityY += gravity * deltaTime;
 
-    m_dstRect.y +=
-        static_cast<int>(m_velocityY * deltaTime);
+    // Tích lũy float để tránh pixel drift.
+    // Cast int mỗi frame làm mất phần thập phân → giật.
+    m_posY += m_velocityY * deltaTime;
 
-    if (m_dstRect.y >= m_groundY - kHeight)
+    const float groundPosY = static_cast<float>(m_groundY - kHeight);
+
+    if (m_posY >= groundPosY)
     {
-        m_dstRect.y = m_groundY - kHeight;
+        m_posY      = groundPosY;
         m_velocityY = 0.0f;
         m_onGround  = true;
     }
+
+    m_dstRect.y = static_cast<int>(m_posY);
 }
 
 void Player::updateState()

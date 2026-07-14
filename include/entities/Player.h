@@ -49,7 +49,8 @@ private:
     AnimationController m_animController;
     CharacterRenderer   m_characterRenderer;
 
-    SDL_Rect m_dstRect{};       // visual rect (render)
+    SDL_Rect m_dstRect{};
+    float    m_posY      = 0.0f;   // float position để tránh drift
     float    m_velocityY = 0.0f;
     int      m_groundY   = 0;
     bool     m_onGround  = true;
@@ -76,7 +77,7 @@ private:
     static constexpr float kJumpForce   = -950.0f;  // pixels/s (âm = đi lên)
 
     // Animation
-    static constexpr int           kFramesPerRow   = 13;
+    static constexpr int           kFramesPerRow   = 12;  // 800px / 64px = 12 cols
     static constexpr std::uint32_t kFrameDurationMs = 80;
 
     // Hitbox inset — thu nhỏ so với dstRect để collision fair hơn.

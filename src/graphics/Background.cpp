@@ -1,5 +1,7 @@
 #include "graphics/Background.h"
 
+#include <cmath>
+
 #include "resources/ResourceManager.h"
 #include "resources/TextureID.h"
 
@@ -16,11 +18,11 @@ bool Background::init(ResourceManager& resources)
 
     const LayerCfg configs[] =
     {
-        { TextureID::BgLayer1, 12.0f },
-        { TextureID::BgLayer2, 24.0f },
+        { TextureID::BgLayer5, 12.0f },
+        { TextureID::BgLayer4, 24.0f },
         { TextureID::BgLayer3, 42.0f },
-        { TextureID::BgLayer4, 60.0f },
-        { TextureID::BgLayer5, 84.0f },
+        { TextureID::BgLayer2, 60.0f },
+        { TextureID::BgLayer1, 84.0f },
     };
 
     for (const auto& cfg : configs)
@@ -65,26 +67,25 @@ void Background::render(SDL_Renderer* renderer) const
 {
     for (const auto& layer : m_layers)
     {
-        const int scrollX = static_cast<int>(layer.scroll);
+        // layer.width (1024px) < window width (1280px).
+        // 2 bản không đủ cover khi scroll — cần 3 bản.
+        // Dùng round() thay truncation để tránh gap 1 pixel khi wrap.
+        const int scrollX = static_cast<int>(std::round(layer.scroll));
 
-        const SDL_Rect dst1 =
+        for (int i = 0; i < 3; ++i)
         {
-            -scrollX,
-            0,
-            layer.width,
-            kRenderHeight
-        };
+            const SDL_Rect dst =
+            {
+                -scrollX + i * layer.width,
+                0,
+                layer.width,
+                kRenderHeight
+            };
 
-        const SDL_Rect dst2 =
-        {
-            -scrollX + layer.width,
-            0,
-            layer.width,
-            kRenderHeight
-        };
-
-        SDL_RenderCopy(renderer, layer.texture, nullptr, &dst1);
-        SDL_RenderCopy(renderer, layer.texture, nullptr, &dst2);
+            // Chỉ render bản nào thực sự visible trên màn hình.
+            if (dst.x + dst.w > 0 && dst.x < 1280)
+                SDL_RenderCopy(renderer, layer.texture, nullptr, &dst);
+        }
     }
 }
 
