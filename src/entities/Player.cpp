@@ -5,6 +5,11 @@
 
 #include <iostream>
 
+// buildRowClip cắt frameCount frame từ một row cụ thể của spritesheet.
+// stride = số cột THỰC của sheet (sheet.getColumnCount()), không phải
+// frameCount của clip — hai giá trị này khác nhau khi các animation có
+// số frame khác nhau trên cùng 1 sheet (vd: Idle=5, Run=8, Jump=8 nhưng
+// sheet có 10 cột/hàng).
 static AnimationClip buildRowClip(
     const SpriteSheet& sheet,
     int                row,
@@ -16,10 +21,12 @@ static AnimationClip buildRowClip(
     clip.setSpriteSheet(&sheet);
     clip.setLoop(loop);
 
+    const int stride = sheet.getColumnCount();
+
     for (int col = 0; col < frameCount; ++col)
     {
         const auto index =
-            static_cast<std::size_t>(row * frameCount + col);
+            static_cast<std::size_t>(row * stride + col);
 
         if (index >= sheet.getFrameCount())
         {
@@ -120,6 +127,7 @@ bool Player::init(ResourceManager& resources, int groundY)
     //----------------------------------------------------------
 
     m_dstRect   = { 120, m_groundY - kHeight, kWidth, kHeight };
+    m_posY      = static_cast<float>(m_groundY - kHeight);
     m_velocityY = 0.0f;
     m_onGround  = true;
     m_state     = PlayerState::Run;
@@ -129,19 +137,22 @@ bool Player::init(ResourceManager& resources, int groundY)
 
 bool Player::buildAnimationLibrary()
 {
+    // Frame count đo trực tiếp từ spritesheet bằng phân tích pixel:
+    // mỗi row có số pose thực khác nhau, phần còn lại của row là ô rỗng.
     struct ClipDef
     {
         AnimationID id;
         int         row;
+        int         frameCount;
         bool        loop;
     };
 
     const ClipDef clipDefs[] =
     {
-        { AnimationID::PlayerIdle, 0, true  },
-        { AnimationID::PlayerRun,  1, true  },
-        { AnimationID::PlayerJump, 2, false },
-        { AnimationID::PlayerFall, 2, false },
+        { AnimationID::PlayerIdle, 0, 5, true  },
+        { AnimationID::PlayerRun,  1, 8, true  },
+        { AnimationID::PlayerJump, 2, 8, false },
+        { AnimationID::PlayerFall, 2, 8, false },
     };
 
     for (const auto& def : clipDefs)
@@ -149,7 +160,7 @@ bool Player::buildAnimationLibrary()
         AnimationClip clip = buildRowClip(
             m_skinSheet,
             def.row,
-            kFramesPerRow,
+            def.frameCount,
             kFrameDurationMs,
             def.loop);
 
@@ -184,8 +195,8 @@ void Player::updatePhysics(float deltaTime)
 
     m_velocityY += gravity * deltaTime;
 
-    // Tích lũy float để tránh pixel drift.
-    // Cast int mỗi frame làm mất phần thập phân → giật.
+    // Tích lũy float để tránh pixel drift — cast int mỗi frame
+    // làm mất phần thập phân, gây giật vị trí.
     m_posY += m_velocityY * deltaTime;
 
     const float groundPosY = static_cast<float>(m_groundY - kHeight);
@@ -231,6 +242,7 @@ void Player::jump()
 void Player::reset()
 {
     m_dstRect   = { 120, m_groundY - kHeight, kWidth, kHeight };
+    m_posY      = static_cast<float>(m_groundY - kHeight);
     m_velocityY = 0.0f;
     m_onGround  = true;
     m_state     = PlayerState::Run;
@@ -240,8 +252,7 @@ void Player::reset()
 
 SDL_Rect Player::getBounds() const
 {
-    // Hitbox nhỏ hơn dstRect để loại bỏ transparent padding.
-    // Inset từ 4 phía: trái/phải kHitboxInsetX, trên kHitboxInsetY.
+    // Hitbox nhỏ hơn dstRect, loại bỏ transparent padding.
     return SDL_Rect
     {
         m_dstRect.x + kHitboxInsetX,

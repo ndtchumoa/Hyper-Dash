@@ -100,6 +100,14 @@ int SpriteSheet::getFrameHeight() const
     return m_frameHeight;
 }
 
+int SpriteSheet::getColumnCount() const
+{
+    if (m_frameWidth <= 0)
+        return 0;
+
+    return m_textureWidth / m_frameWidth;
+}
+
 bool SpriteSheet::empty() const
 {
     return m_texture == nullptr || m_frames.empty();

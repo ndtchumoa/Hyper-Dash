@@ -48,7 +48,7 @@ namespace
         "assets/textures/background/Normal BG/GandalfHardcore Background layers_layer 5.png",
 
         // ObstacleOre
-        "assets/textures/background/Ores.png",
+        "assets/textures/obstacles/Ores.png",
 
         // UiButton
         "assets/textures/ui/button.png",

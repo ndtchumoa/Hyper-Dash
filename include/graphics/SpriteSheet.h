@@ -31,6 +31,11 @@ public:
 
     int getFrameHeight() const;
 
+    // Số cột thực tế trong grid — cần thiết để tính đúng stride
+    // khi map (row, col) → frame index. Chỉ có ý nghĩa với sheet
+    // được tạo bằng create(texture, frameWidth, frameHeight).
+    int getColumnCount() const;
+
     bool empty() const;
 
     void clear();

@@ -25,10 +25,8 @@ public:
 
     void reset();
 
-    // Trả về hitbox thực (nhỏ hơn dstRect) để collision fair hơn.
-    SDL_Rect getBounds() const;
-
-    PlayerState getState() const;
+    SDL_Rect    getBounds() const;
+    PlayerState getState()  const;
 
 private:
 
@@ -44,26 +42,31 @@ private:
     SpriteSheet m_hairSheet;
     SpriteSheet m_shoesSheet;
 
-    AnimationLibrary    m_animLibrary;
-    Animator            m_animator;
-    AnimationController m_animController;
-    CharacterRenderer   m_characterRenderer;
+    AnimationLibrary     m_animLibrary;
+    Animator              m_animator;
+    AnimationController   m_animController;
+    CharacterRenderer     m_characterRenderer;
 
     SDL_Rect m_dstRect{};
-    float    m_posY      = 0.0f;   // float position để tránh drift
-    float    m_velocityY = 0.0f;
-    int      m_groundY   = 0;
-    bool     m_onGround  = true;
+
+    // Tích lũy vị trí bằng float để tránh pixel drift.
+    // m_dstRect.y chỉ dùng cho render, luôn sync từ m_posY.
+    float m_posY      = 0.0f;
+    float m_velocityY = 0.0f;
+    int   m_groundY   = 0;
+    bool  m_onGround  = true;
 
     PlayerState m_state = PlayerState::Run;
 
-    //==============================
-    // Constants
-    //==============================
-
 public:
 
-    static constexpr int kFrameWidth  = 64;
+    // Kích thước frame THỰC của spritesheet — verify bằng phân tích pixel
+    // (đo center-of-mass từng frame, drift ~0px xác nhận đúng):
+    //   800px / 10 cols = 80px, 448px / 7 rows = 64px.
+    // Trước đây nhầm 64x64 (đoán theo convention phổ biến) khiến việc
+    // cắt frame lệch pha liên tục — mỗi frame hiển thị ghép nửa pose này
+    // với nửa pose khác, tạo hiệu ứng "chạy A→B rồi giật về A".
+    static constexpr int kFrameWidth  = 80;
     static constexpr int kFrameHeight = 64;
     static constexpr int kScale       = 2;
     static constexpr int kWidth       = kFrameWidth  * kScale;
@@ -71,18 +74,16 @@ public:
 
 private:
 
-    // Physics
-    static constexpr float kGravity     = 2600.0f;  // rise gravity (pixels/s²)
-    static constexpr float kFallGravity = 2600.0f;  // fall gravity — snappier landing
-    static constexpr float kJumpForce   = -950.0f;  // pixels/s (âm = đi lên)
+    static constexpr float kGravity     = 2600.0f;
+    static constexpr float kFallGravity = 2600.0f;
+    static constexpr float kJumpForce   = -950.0f;
 
-    // Animation
-    static constexpr int           kFramesPerRow   = 12;  // 800px / 64px = 12 cols
     static constexpr std::uint32_t kFrameDurationMs = 80;
 
-    // Hitbox inset — thu nhỏ so với dstRect để collision fair hơn.
-    // Sprite character thực chiếm ~60% chiều rộng, ~85% chiều cao.
-    // Transparent padding ở 4 phía bị loại bỏ.
-    static constexpr int kHitboxInsetX = 28;  // mỗi bên trái/phải
-    static constexpr int kHitboxInsetY = 16;  // phía trên
+    // Hitbox — đo trực tiếp từ pixel content trong frame gốc 80x64,
+    // lấy bbox rộng nhất trong 3 animation (Jump: X 28-53, Y 20-63)
+    // để hitbox ổn định không đổi khi chuyển animation.
+    // Sau scale x2: content X≈56-106 (trong 160), Y≈40-126 (trong 128).
+    static constexpr int kHitboxInsetX = 54;  // mỗi bên trái/phải
+    static constexpr int kHitboxInsetY = 40;  // phía trên (chân chạm đáy)
 };
