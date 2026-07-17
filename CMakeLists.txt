@@ -55,7 +55,7 @@ add_executable(HyperDash
     # src/systems/AudioManager.cpp    — future: sound/music
     # src/systems/CollisionSystem.cpp — future: physics collision
     # src/systems/InputSystem.cpp     — future: input mapping
-    # src/systems/SaveSystem.cpp      — future: save/load
+    src/systems/SaveSystem.cpp
     # NOTE: src/systems/AssetManager.cpp đã bị xóa (replaced by ResourceManager)
     # NOTE: src/systems/Animation.cpp và AnimationManager.cpp đã bị xóa
 

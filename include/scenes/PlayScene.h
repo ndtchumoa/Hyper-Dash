@@ -8,6 +8,7 @@
 #include "systems/DifficultyManager.h"
 #include "ui/Score.h"
 #include "ui/Label.h"
+#include "ui/Button.h"
 
 class PlayScene : public Scene
 {
@@ -25,6 +26,10 @@ private:
 
     void applyDifficulty();
 
+    void initPauseOverlay();
+    void updatePause();
+    void renderPauseOverlay(SDL_Renderer* renderer) const;
+
 private:
 
     Background        m_background;
@@ -36,11 +41,21 @@ private:
 
     SDL_Rect m_ground{};
 
-    // Tổng thời gian chơi trong session hiện tại (giây).
     float m_elapsedTime = 0.0f;
+    int   m_lastLevel   = 0;
 
-    // Level hiện tại — dùng để detect khi nào label cần update.
-    int m_lastLevel = 0;
+    //==============================
+    // Pause — xử lý nội bộ trong PlayScene, không đổi kiến trúc
+    // SceneManager. Khi paused, toàn bộ gameplay update() bị freeze
+    // (early-return trước mọi logic vật lý/spawn/collision), chỉ
+    // overlay UI được update/render thêm.
+    //==============================
+
+    bool m_paused = false;
+
+    Label  m_pauseTitleLabel;
+    Button m_resumeButton;
+    Button m_menuButton;
 
     static constexpr int kGroundHeight = 80;
     static constexpr int kWindowWidth  = 1280;

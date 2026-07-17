@@ -150,9 +150,10 @@ bool Player::buildAnimationLibrary()
     const ClipDef clipDefs[] =
     {
         { AnimationID::PlayerIdle, 0, 5, true  },
-        { AnimationID::PlayerRun,  1, 8, true  },
-        { AnimationID::PlayerJump, 2, 8, false },
-        { AnimationID::PlayerFall, 2, 8, false },
+        { AnimationID::PlayerWalk, 1, 8, true  }, // nếu sau này dùng
+        { AnimationID::PlayerRun,  2, 8, true  },
+        { AnimationID::PlayerJump, 3, 8, false },
+        { AnimationID::PlayerFall, 4, 8, false },
     };
 
     for (const auto& def : clipDefs)

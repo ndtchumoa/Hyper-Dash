@@ -19,6 +19,7 @@ public:
 private:
 
     Label  m_titleLabel;
+    Label  m_highScoreLabel;
     Button m_playButton;
 
     static constexpr int kWindowWidth  = 1280;

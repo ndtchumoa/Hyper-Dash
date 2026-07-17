@@ -46,13 +46,13 @@ private:
     // ── Tuning constants ──────────────────────────────────────
     //
     // Tốc độ ban đầu (pixels/s)
-    static constexpr float kBaseObstacleSpeed    = 360.0f;
+    static constexpr float kBaseObstacleSpeed    = 520.0f;
 
     // Tăng bao nhiêu pixels/s mỗi giây chơi (linear)
-    static constexpr float kSpeedRampPerSecond   = 8.0f;
+    static constexpr float kSpeedRampPerSecond   = 3.0f;
 
     // Tốc độ tối đa (pixels/s)
-    static constexpr float kMaxObstacleSpeed     = 900.0f;
+    static constexpr float kMaxObstacleSpeed     = 800.0f;
 
     // Spawn interval ban đầu (giây)
     static constexpr float kBaseSpawnInterval    = 2.0f;
@@ -67,7 +67,7 @@ private:
     static constexpr int   kLevelScoreThreshold  = 10;
 
     // Mỗi level, speed tăng thêm bao nhiêu % (nhân thêm vào sau ramp)
-    static constexpr float kLevelSpeedBonus      = 0.05f;  // 5%/level
+    static constexpr float kLevelSpeedBonus      = 0.03f;  // 5%/level
 
     // Background scroll multiplier tăng theo speed ratio
     // bgScrollMultiplier = currentSpeed / baseSpeed

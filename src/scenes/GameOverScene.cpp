@@ -5,6 +5,7 @@
 
 #include "engine/Game.h"
 #include "resources/ResourceManager.h"
+#include "systems/SaveSystem.h"
 
 #include <string>
 #include <iostream>
@@ -29,7 +30,28 @@ void GameOverScene::init()
         return;
     }
 
-    // "GAME OVER" — căn giữa theo chiều ngang
+    //----------------------------------------------------------
+    // Load save, so sánh & cập nhật high score nếu cần.
+    // SaveSystem không giữ state — tạo instance tạm dùng 1 lần.
+    //----------------------------------------------------------
+
+    SaveSystem save;
+    SaveData   data = save.load();
+
+    data.total_runs_played += 1;
+
+    if (m_finalScore > data.high_score)
+    {
+        data.high_score  = m_finalScore;
+        m_isNewHighScore = true;
+    }
+
+    save.save(data);
+
+    //----------------------------------------------------------
+    // "GAME OVER"
+    //----------------------------------------------------------
+
     m_titleLabel.init(
         renderer,
         fontLarge,
@@ -40,10 +62,13 @@ void GameOverScene::init()
         const SDL_Rect b = m_titleLabel.getBounds();
         m_titleLabel.setPosition(
             (kWindowWidth  - b.w) / 2,
-            kWindowHeight / 2 - 140);
+            kWindowHeight / 2 - 160);
     }
 
+    //----------------------------------------------------------
     // Score cuối
+    //----------------------------------------------------------
+
     const std::string scoreText =
         "Score: " + std::to_string(m_finalScore);
 
@@ -57,10 +82,39 @@ void GameOverScene::init()
         const SDL_Rect b = m_scoreLabel.getBounds();
         m_scoreLabel.setPosition(
             (kWindowWidth - b.w) / 2,
-            kWindowHeight / 2 - 60);
+            kWindowHeight / 2 - 90);
     }
 
-    // Nút Restart
+    //----------------------------------------------------------
+    // High score — "New High Score!" nếu vừa phá kỷ lục,
+    // ngược lại hiển thị kỷ lục hiện tại để người chơi biết mục tiêu.
+    //----------------------------------------------------------
+
+    const std::string highScoreText = m_isNewHighScore
+        ? "New High Score!"
+        : ("High Score: " + std::to_string(data.high_score));
+
+    const SDL_Color highScoreColor = m_isNewHighScore
+        ? SDL_Color{ 255, 215, 0, 255 }   // vàng gold — nổi bật
+        : SDL_Color{ 180, 180, 180, 255 };
+
+    m_highScoreLabel.init(
+        renderer,
+        fontRegular,
+        highScoreText,
+        highScoreColor);
+
+    {
+        const SDL_Rect b = m_highScoreLabel.getBounds();
+        m_highScoreLabel.setPosition(
+            (kWindowWidth - b.w) / 2,
+            kWindowHeight / 2 - 40);
+    }
+
+    //----------------------------------------------------------
+    // Buttons
+    //----------------------------------------------------------
+
     m_restartButton.init(
         renderer,
         fontRegular,
@@ -68,7 +122,6 @@ void GameOverScene::init()
         kWindowWidth / 2 - 120,
         kWindowHeight / 2 + 20);
 
-    // Nút Menu
     m_menuButton.init(
         renderer,
         fontRegular,
@@ -76,7 +129,9 @@ void GameOverScene::init()
         kWindowWidth / 2 + 20,
         kWindowHeight / 2 + 20);
 
-    std::cout << "[GameOverScene] Initialized.\n";
+    std::cout
+        << "[GameOverScene] Initialized. finalScore=" << m_finalScore
+        << ", newHighScore=" << m_isNewHighScore << '\n';
 }
 
 void GameOverScene::handleEvents(const SDL_Event& event)
@@ -119,12 +174,12 @@ void GameOverScene::update(float /*deltaTime*/)
 
 void GameOverScene::render(SDL_Renderer* renderer)
 {
-    // Nền tối mờ
     SDL_SetRenderDrawColor(renderer, 20, 20, 20, 255);
     SDL_RenderClear(renderer);
 
     m_titleLabel.render(renderer);
     m_scoreLabel.render(renderer);
+    m_highScoreLabel.render(renderer);
     m_restartButton.render(renderer);
     m_menuButton.render(renderer);
 }
@@ -133,6 +188,7 @@ void GameOverScene::clean()
 {
     m_titleLabel.clean();
     m_scoreLabel.clean();
+    m_highScoreLabel.clean();
     m_restartButton.clean();
     m_menuButton.clean();
 

@@ -8,7 +8,6 @@ class GameOverScene : public Scene
 {
 public:
 
-    // finalScore được truyền khi chuyển scene.
     GameOverScene(Game& game, int finalScore);
 
     void init()                               override;
@@ -19,10 +18,12 @@ public:
 
 private:
 
-    int m_finalScore = 0;
+    int  m_finalScore    = 0;
+    bool m_isNewHighScore = false;
 
     Label  m_titleLabel;
     Label  m_scoreLabel;
+    Label  m_highScoreLabel;
     Button m_restartButton;
     Button m_menuButton;
 

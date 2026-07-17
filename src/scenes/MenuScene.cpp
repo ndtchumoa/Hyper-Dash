@@ -4,7 +4,9 @@
 
 #include "engine/Game.h"
 #include "resources/ResourceManager.h"
+#include "systems/SaveSystem.h"
 
+#include <string>
 #include <iostream>
 
 MenuScene::MenuScene(Game& game)
@@ -40,8 +42,31 @@ void MenuScene::init()
             kWindowHeight / 2 - 120);
     }
 
-    // Nút Play — TTF_SizeText để tính kích thước trước,
-    // tránh gọi init() hai lần chỉ để lấy bounds.
+    //----------------------------------------------------------
+    // High score — đọc từ SaveSystem, hiển thị dưới tiêu đề.
+    // SaveSystem chỉ dùng 1 lần ở đây (load-only), không giữ instance.
+    //----------------------------------------------------------
+
+    SaveSystem save;
+    const SaveData data = save.load();
+
+    const std::string highScoreText =
+        "High Score: " + std::to_string(data.high_score);
+
+    m_highScoreLabel.init(
+        renderer,
+        fontRegular,
+        highScoreText,
+        { 200, 200, 200, 255 });
+
+    {
+        const SDL_Rect b = m_highScoreLabel.getBounds();
+        m_highScoreLabel.setPosition(
+            (kWindowWidth - b.w) / 2,
+            kWindowHeight / 2 - 60);
+    }
+
+    // Nút Play
     int textW = 0;
     int textH = 0;
     TTF_SizeText(fontRegular, "Play", &textW, &textH);
@@ -81,7 +106,6 @@ void MenuScene::handleEvents(const SDL_Event& event)
             game.quit();
             break;
 
-        // Phím Space / Enter cũng start game
         case SDLK_SPACE:
         case SDLK_RETURN:
             game.getSceneManager().changeScene(
@@ -112,12 +136,14 @@ void MenuScene::render(SDL_Renderer* renderer)
     SDL_RenderClear(renderer);
 
     m_titleLabel.render(renderer);
+    m_highScoreLabel.render(renderer);
     m_playButton.render(renderer);
 }
 
 void MenuScene::clean()
 {
     m_titleLabel.clean();
+    m_highScoreLabel.clean();
     m_playButton.clean();
 
     std::cout << "[MenuScene] Cleaned.\n";
