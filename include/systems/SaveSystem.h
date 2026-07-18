@@ -17,6 +17,13 @@ struct SaveData
     // Skin đã chọn ở MenuScene — dùng cho F5 (character selection).
     // Lưu ở đây để không phải tạo thêm 1 file save riêng sau này.
     std::string selected_skin = "MaleSkin1";
+
+    // Audio settings — thang 0..128 (SDL_mixer MIX_MAX_VOLUME).
+    // Default khớp với AudioManager::kDefaultVolume. Chưa có UI
+    // chỉnh volume ở Sprint F3 — field tồn tại sẵn để settings menu
+    // (sprint sau) chỉ cần đọc/ghi, không cần sửa SaveData nữa.
+    int music_volume = 80;
+    int sfx_volume   = 80;
 };
 
 // SaveSystem có đúng một trách nhiệm: đọc/ghi SaveData xuống đĩa

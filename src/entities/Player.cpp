@@ -45,7 +45,10 @@ static AnimationClip buildRowClip(
     return clip;
 }
 
-bool Player::init(ResourceManager& resources, int groundY)
+bool Player::init(
+    ResourceManager& resources,
+    int              groundY,
+    TextureID        skinTexture)
 {
     m_groundY = groundY;
 
@@ -61,7 +64,7 @@ bool Player::init(ResourceManager& resources, int groundY)
 
     const LayerDef layerDefs[] =
     {
-        { TextureID::MaleSkin1, &m_skinSheet  },
+        { skinTexture,          &m_skinSheet  },
         { TextureID::MaleShirt, &m_shirtSheet },
         { TextureID::MalePants, &m_pantsSheet },
         { TextureID::MaleHair1, &m_hairSheet  },
@@ -190,6 +193,10 @@ void Player::update(float deltaTime)
 
 void Player::updatePhysics(float deltaTime)
 {
+    // Reset mỗi frame — chỉ true đúng frame chạm đất, không phải mỗi
+    // frame đứng yên trên đất (xem justLanded()).
+    m_justLanded = false;
+
     const float gravity = (m_velocityY >= 0.0f)
         ? kFallGravity
         : kGravity;
@@ -204,9 +211,16 @@ void Player::updatePhysics(float deltaTime)
 
     if (m_posY >= groundPosY)
     {
+        // Chỉ tính là "vừa landed" nếu trước đó đang ở trên không —
+        // tránh báo landing liên tục mỗi frame khi player đứng yên.
+        const bool wasAirborne = !m_onGround;
+
         m_posY      = groundPosY;
         m_velocityY = 0.0f;
         m_onGround  = true;
+
+        if (wasAirborne)
+            m_justLanded = true;
     }
 
     m_dstRect.y = static_cast<int>(m_posY);
@@ -231,24 +245,32 @@ void Player::render(SDL_Renderer* renderer) const
     m_characterRenderer.render(renderer, m_animator, m_dstRect);
 }
 
-void Player::jump()
+bool Player::jump()
 {
     if (!m_onGround)
-        return;
+        return false;
 
     m_velocityY = kJumpForce;
     m_onGround  = false;
+
+    return true;
 }
 
 void Player::reset()
 {
-    m_dstRect   = { 120, m_groundY - kHeight, kWidth, kHeight };
-    m_posY      = static_cast<float>(m_groundY - kHeight);
-    m_velocityY = 0.0f;
-    m_onGround  = true;
-    m_state     = PlayerState::Run;
+    m_dstRect    = { 120, m_groundY - kHeight, kWidth, kHeight };
+    m_posY       = static_cast<float>(m_groundY - kHeight);
+    m_velocityY  = 0.0f;
+    m_onGround   = true;
+    m_justLanded = false;
+    m_state      = PlayerState::Run;
 
     m_animator.play(AnimationID::PlayerRun, true);
+}
+
+bool Player::justLanded() const
+{
+    return m_justLanded;
 }
 
 SDL_Rect Player::getBounds() const

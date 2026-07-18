@@ -22,6 +22,8 @@ enum class TextureID : std::uint16_t
     MaleSkin1,
     MaleSkin2,
     MaleSkin3,
+    MaleSkin4,
+    MaleSkin5,
 
     //==============================
     // Male Character — Hair
@@ -54,6 +56,11 @@ enum class TextureID : std::uint16_t
     //==============================
 
     ObstacleOre,
+
+    // "Garden Decorations.png" — spritesheet chứa 6 vật thể trang trí
+    // riêng biệt (xem ObstacleCatalog::resolve() để lấy sourceRect
+    // từng vật). 1 TextureID duy nhất cho cả 6 kind, tránh load trùng.
+    ObstacleGarden,
 
     //==============================
     // UI

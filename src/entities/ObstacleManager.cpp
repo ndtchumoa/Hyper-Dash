@@ -1,10 +1,10 @@
 #include "entities/ObstacleManager.h"
 
 #include "resources/ResourceManager.h"
-#include "resources/TextureID.h"
 
 #include <algorithm>
 #include <cstdlib>
+#include <random>
 
 bool ObstacleManager::init(
     ResourceManager& resources,
@@ -13,8 +13,7 @@ bool ObstacleManager::init(
 {
     m_groundY     = groundY;
     m_screenWidth = screenWidth;
-
-    m_obstacleTexture = resources.get(TextureID::ObstacleOre);
+    m_resources   = &resources;
 
     reset();
 
@@ -54,11 +53,33 @@ float ObstacleManager::getSpawnInterval() const
 
 void ObstacleManager::spawn()
 {
+    const ObstacleKind kind = pickRandomKind();
+    const ObstacleDef  def  = ObstacleCatalog::resolve(kind);
+
+    SDL_Texture* texture =
+        m_resources ? m_resources->get(def.texture) : nullptr;
+
     m_obstacles.emplace_back(
-        m_obstacleTexture,
+        texture,
+        def.sourceRect,
+        def.renderWidth,
+        def.renderHeight,
         m_screenWidth,
         m_groundY,
         m_speed);
+}
+
+ObstacleKind ObstacleManager::pickRandomKind() const
+{
+    // Random đều trên tất cả kind (Ore + 6 Garden) — quyết định
+    // "spawn cái gì" thuộc về ObstacleManager, đúng nơi đã sở hữu
+    // toàn bộ logic spawn (spawn timing, spawn position).
+    static std::mt19937 rng{ std::random_device{}() };
+
+    std::uniform_int_distribution<int> dist(
+        0, ObstacleCatalog::count() - 1);
+
+    return static_cast<ObstacleKind>(dist(rng));
 }
 
 void ObstacleManager::update(float deltaTime)

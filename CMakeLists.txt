@@ -22,8 +22,10 @@ add_executable(HyperDash
 
     # ── Entities ──────────────────────────────────────────────
     src/entities/Obstacle.cpp
+    src/entities/ObstacleCatalog.cpp
     src/entities/ObstacleManager.cpp
     src/entities/Player.cpp
+    src/entities/PlayerSkin.cpp
     # src/entities/Character.cpp — future: shared character base
     # src/entities/Enemy.cpp     — future: enemy types
     # src/entities/Pickup.cpp    — future: collectible items
@@ -52,7 +54,7 @@ add_executable(HyperDash
 
     # ── Systems ───────────────────────────────────────────────
     src/systems/DifficultyManager.cpp
-    # src/systems/AudioManager.cpp    — future: sound/music
+    src/systems/AudioManager.cpp
     # src/systems/CollisionSystem.cpp — future: physics collision
     # src/systems/InputSystem.cpp     — future: input mapping
     src/systems/SaveSystem.cpp

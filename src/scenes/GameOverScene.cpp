@@ -5,6 +5,7 @@
 
 #include "engine/Game.h"
 #include "resources/ResourceManager.h"
+#include "resources/AudioID.h"
 #include "systems/SaveSystem.h"
 
 #include <string>
@@ -68,6 +69,11 @@ void GameOverScene::init()
     //----------------------------------------------------------
     // Score cuối
     //----------------------------------------------------------
+
+    // Score.mp3 phát đúng 1 lần tại đây (thay vì mỗi lần vượt
+    // obstacle trong PlayScene) — gắn với thời điểm điểm số được
+    // "chốt" và hiển thị cho người chơi xem.
+    game.getAudio().playSfx(SfxID::Score);
 
     const std::string scoreText =
         "Score: " + std::to_string(m_finalScore);

@@ -2,19 +2,23 @@
 
 Obstacle::Obstacle(
     SDL_Texture* texture,
+    SDL_Rect     sourceRect,
+    int          renderWidth,
+    int          renderHeight,
     int          startX,
     int          groundY,
     float        speedPixelsPerSecond)
     : m_texture(texture)
+    , m_sourceRect(sourceRect)
     , m_speed(speedPixelsPerSecond)
     , m_posX(static_cast<float>(startX))
 {
     m_rect =
     {
         startX,
-        groundY - kHeight,
-        kWidth,
-        kHeight
+        groundY - renderHeight,
+        renderWidth,
+        renderHeight
     };
 }
 
@@ -29,7 +33,7 @@ void Obstacle::render(SDL_Renderer* renderer) const
 {
     if (m_texture)
     {
-        SDL_RenderCopy(renderer, m_texture, nullptr, &m_rect);
+        SDL_RenderCopy(renderer, m_texture, &m_sourceRect, &m_rect);
     }
     else
     {

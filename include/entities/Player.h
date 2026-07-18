@@ -6,6 +6,7 @@
 #include "graphics/AnimationLibrary.h"
 #include "graphics/SpriteSheet.h"
 #include "entities/PlayerState.h"
+#include "resources/TextureID.h"
 
 #include <SDL2/SDL.h>
 
@@ -15,18 +16,34 @@ class Player
 {
 public:
 
-    bool init(ResourceManager& resources, int groundY);
+    // skinTexture: cho phép chọn skin (F5 character selection) thay
+    // vì hardcode MaleSkin1. Default giữ nguyên hành vi cũ cho bất kỳ
+    // caller nào chưa truyền tham số này — extend API, không break.
+    bool init(
+        ResourceManager& resources,
+        int              groundY,
+        TextureID        skinTexture = TextureID::MaleSkin1);
 
     void update(float deltaTime);
 
     void render(SDL_Renderer* renderer) const;
 
-    void jump();
+    // Trả về true nếu nhảy thực sự xảy ra (đang đứng trên đất), false
+    // nếu bị bỏ qua (đang ở trên không). Caller (PlayScene) dùng giá
+    // trị này để quyết định có phát SFX Jump hay không — Player không
+    // biết gì về audio.
+    bool jump();
 
     void reset();
 
     SDL_Rect    getBounds() const;
     PlayerState getState()  const;
+
+    // Polling: true đúng 1 frame tại thời điểm Player vừa chạm đất
+    // sau khi nhảy/rơi. Theo đúng pattern polling đã dùng cho UI
+    // (Button::isClicked()) thay vì callback — giữ Player không phụ
+    // thuộc ngược vào bất kỳ hệ thống nào (audio, particle, v.v.).
+    bool justLanded() const;
 
 private:
 
@@ -55,6 +72,10 @@ private:
     float m_velocityY = 0.0f;
     int   m_groundY   = 0;
     bool  m_onGround  = true;
+
+    // Flag transient — set true đúng 1 frame khi vừa chạm đất,
+    // reset về false ở đầu mỗi updatePhysics(). Xem justLanded().
+    bool  m_justLanded = false;
 
     PlayerState m_state = PlayerState::Run;
 

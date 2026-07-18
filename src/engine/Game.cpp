@@ -1,6 +1,7 @@
 #include "engine/Game.h"
 
 #include "scenes/MenuScene.h"
+#include "systems/SaveSystem.h"
 
 #include <SDL2/SDL_ttf.h>
 #include <SDL2/SDL_mixer.h>
@@ -34,6 +35,28 @@ bool Game::init()
         return false;
     }
 
+    // Audio không phải hard dependency như renderer/window — nếu
+    // driver/codec có vấn đề, game vẫn nên chạy được (im lặng) thay
+    // vì từ chối khởi động hoàn toàn. AudioManager/ResourceManager đã
+    // tự log lỗi mỗi lần load/phát thất bại (không crash), nên không
+    // cần return false ở đây.
+    if (!(Mix_Init(MIX_INIT_MP3) & MIX_INIT_MP3))
+    {
+        std::cerr
+            << "[Game] Mix_Init: " << Mix_GetError()
+            << " — tiếp tục chạy game không có audio.\n";
+    }
+    else if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) != 0)
+    {
+        std::cerr
+            << "[Game] Mix_OpenAudio: " << Mix_GetError()
+            << " — tiếp tục chạy game không có audio.\n";
+    }
+    else
+    {
+        m_audioReady = true;
+    }
+
     m_window = SDL_CreateWindow(
         "Hyper Dash",
         SDL_WINDOWPOS_CENTERED,
@@ -62,6 +85,26 @@ bool Game::init()
     {
         std::cerr << "[Game] ResourceManager init failed.\n";
         return false;
+    }
+
+    if (!m_audio.init(m_resources))
+    {
+        std::cerr << "[Game] AudioManager init failed.\n";
+        return false;
+    }
+
+    // Áp dụng volume đã lưu (nếu có) ngay khi khởi động. SaveSystem
+    // không giữ state — tạo instance tạm dùng 1 lần, giống cách
+    // MenuScene/GameOverScene đang dùng. Chưa có UI chỉnh volume ở
+    // F3; field này tồn tại sẵn trong SaveData để sprint sau (settings
+    // menu) chỉ cần gọi setMusicVolume/setSfxVolume + SaveSystem::save()
+    // mà không cần sửa Game hay SaveData nữa.
+    {
+        const SaveSystem save;
+        const SaveData    data = save.load();
+
+        m_audio.setMusicVolume(data.music_volume);
+        m_audio.setSfxVolume(data.sfx_volume);
     }
 
     // Game bắt đầu từ MenuScene.
@@ -124,6 +167,11 @@ void Game::render()
 
 void Game::clean()
 {
+    m_audio.clean();
+
+    // m_resources.clean() gọi Mix_FreeMusic/Mix_FreeChunk cho toàn bộ
+    // cache — PHẢI chạy trước Mix_CloseAudio() (giải phóng khi device
+    // còn mở là yêu cầu của SDL_mixer, không phải tùy chọn).
     m_resources.clean();
 
     if (m_renderer)
@@ -138,6 +186,13 @@ void Game::clean()
         m_window = nullptr;
     }
 
+    if (m_audioReady)
+    {
+        Mix_CloseAudio();
+        m_audioReady = false;
+    }
+
+    Mix_Quit();
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();

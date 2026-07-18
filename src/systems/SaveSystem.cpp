@@ -5,6 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <cctype>
+#include <algorithm>
 
 namespace
 {
@@ -93,6 +94,16 @@ namespace
             return 0;
         }
     }
+
+    // SaveSystem không include SDL_mixer (không biết gì về audio
+    // system) — dùng hằng số cục bộ khớp với MIX_MAX_VOLUME thay vì
+    // phụ thuộc ngược vào AudioManager.
+    constexpr int kMaxVolume = 128;
+
+    int clampVolume(int value)
+    {
+        return std::clamp(value, 0, kMaxVolume);
+    }
 }
 
 SaveData SaveSystem::load() const
@@ -135,6 +146,14 @@ SaveData SaveSystem::load() const
             if (!s.empty())
                 data.selected_skin = s;
         }
+        else if (key == "music_volume")
+        {
+            data.music_volume = clampVolume(parseIntValue(rawValue));
+        }
+        else if (key == "sfx_volume")
+        {
+            data.sfx_volume = clampVolume(parseIntValue(rawValue));
+        }
         // Field lạ (từ version save cũ/mới hơn) bị bỏ qua an toàn —
         // không làm hỏng toàn bộ quá trình load.
     }
@@ -142,7 +161,9 @@ SaveData SaveSystem::load() const
     std::cout
         << "[SaveSystem] Loaded: high_score=" << data.high_score
         << ", total_runs_played=" << data.total_runs_played
-        << ", selected_skin=" << data.selected_skin << '\n';
+        << ", selected_skin=" << data.selected_skin
+        << ", music_volume=" << data.music_volume
+        << ", sfx_volume=" << data.sfx_volume << '\n';
 
     return data;
 }
@@ -171,7 +192,9 @@ bool SaveSystem::save(const SaveData& data) const
     file << "{\n";
     file << "  \"high_score\": "        << data.high_score        << ",\n";
     file << "  \"total_runs_played\": " << data.total_runs_played << ",\n";
-    file << "  \"selected_skin\": \""   << jsonEscape(data.selected_skin) << "\"\n";
+    file << "  \"selected_skin\": \""   << jsonEscape(data.selected_skin) << "\",\n";
+    file << "  \"music_volume\": "      << data.music_volume      << ",\n";
+    file << "  \"sfx_volume\": "        << data.sfx_volume        << "\n";
     file << "}\n";
 
     if (!file.good())

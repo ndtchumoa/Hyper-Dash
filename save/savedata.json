@@ -1,5 +1,7 @@
 {
   "high_score": 122,
-  "total_runs_played": 2,
-  "selected_skin": "MaleSkin1"
+  "total_runs_played": 25,
+  "selected_skin": "MaleSkin5",
+  "music_volume": 80,
+  "sfx_volume": 80
 }

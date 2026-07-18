@@ -1,6 +1,7 @@
 #pragma once
 
 #include "entities/Obstacle.h"
+#include "entities/ObstacleCatalog.h"
 
 #include <SDL2/SDL.h>
 
@@ -40,14 +41,18 @@ public:
 
 private:
 
-    void  spawn();
-    float getRandomSpawnInterval() const;
+    void         spawn();
+    ObstacleKind pickRandomKind() const;
+    float        getRandomSpawnInterval() const;
 
 private:
 
     std::vector<Obstacle> m_obstacles;
 
-    SDL_Texture* m_obstacleTexture = nullptr;
+    // Không cache SDL_Texture* riêng nữa — mỗi kind có thể dùng
+    // texture khác nhau (xem ObstacleCatalog). Tra cứu ResourceManager
+    // mỗi lần spawn (O(1) array lookup, đã cache sẵn, không tốn kém).
+    ResourceManager* m_resources = nullptr;
 
     int   m_groundY     = 0;
     int   m_screenWidth = 0;

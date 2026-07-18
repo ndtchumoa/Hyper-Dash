@@ -21,6 +21,10 @@ namespace
         "assets/textures/characters/male/skin/Male Skin2.png",
         // MaleSkin3
         "assets/textures/characters/male/skin/Male Skin3.png",
+        // MaleSkin4
+        "assets/textures/characters/male/skin/Male Skin4.png",
+        // MaleSkin5
+        "assets/textures/characters/male/skin/Male Skin5.png",
 
         // MaleHair1
         "assets/textures/characters/male/hair/Male Hair1.png",
@@ -49,6 +53,8 @@ namespace
 
         // ObstacleOre
         "assets/textures/obstacles/Ores.png",
+        // ObstacleGarden
+        "assets/textures/obstacles/Garden Decorations.png",
 
         // UiButton
         "assets/textures/ui/button.png",
@@ -83,6 +89,68 @@ namespace
         kFontDefs.size() ==
             static_cast<std::size_t>(FontID::Count),
         "kFontDefs size does not match FontID::Count.");
+
+    //--------------------------------------------------
+    // Music paths
+    //--------------------------------------------------
+
+    constexpr std::array<std::string_view,
+        static_cast<std::size_t>(MusicID::Count)>
+    kMusicPaths =
+    {{
+        // None = 0
+        "",
+
+        // Menu
+        "assets/audio/music/GameIntro1.mp3",
+        // InGame1
+        "assets/audio/music/InGame1.mp3",
+        // InGame2
+        "assets/audio/music/InGame2.mp3",
+        // InGame3
+        "assets/audio/music/InGame3.mp3",
+
+        // Ghi chú: assets/audio/music/GameIntro2.mp3 tồn tại nhưng
+        // chưa được map — dự phòng cho variation menu hoặc stinger
+        // game-over trong sprint sau.
+    }};
+
+    static_assert(
+        kMusicPaths.size() ==
+            static_cast<std::size_t>(MusicID::Count),
+        "kMusicPaths size does not match MusicID::Count.");
+
+    //--------------------------------------------------
+    // Sfx paths
+    //--------------------------------------------------
+
+    constexpr std::array<std::string_view,
+        static_cast<std::size_t>(SfxID::Count)>
+    kSfxPaths =
+    {{
+        // None = 0
+        "",
+
+        // Jump
+        "assets/audio/sfx/Jumping.mp3",
+        // Landing
+        "assets/audio/sfx/JumpLanding.mp3",
+        // Score
+        "assets/audio/sfx/Score.mp3",
+        // Collision — chưa có sfx va chạm riêng, tái dùng Explore.mp3
+        // cho tới khi có asset chuyên biệt.
+        "assets/audio/sfx/Explore.mp3",
+
+        // Ghi chú: assets/audio/sfx/Running.mp3 tồn tại nhưng chưa
+        // được map — dự phòng cho footstep loop liên tục, cần cơ chế
+        // quản lý channel riêng (loop trên 1 channel cố định), ngoài
+        // scope F3.
+    }};
+
+    static_assert(
+        kSfxPaths.size() ==
+            static_cast<std::size_t>(SfxID::Count),
+        "kSfxPaths size does not match SfxID::Count.");
 }
 
 namespace ResourcePath
@@ -105,5 +173,25 @@ namespace ResourcePath
             return {};
 
         return kFontDefs[index];
+    }
+
+    std::string_view resolveMusic(MusicID id)
+    {
+        const auto index = static_cast<std::size_t>(id);
+
+        if (index >= kMusicPaths.size())
+            return {};
+
+        return kMusicPaths[index];
+    }
+
+    std::string_view resolveSfx(SfxID id)
+    {
+        const auto index = static_cast<std::size_t>(id);
+
+        if (index >= kSfxPaths.size())
+            return {};
+
+        return kSfxPaths[index];
     }
 }

@@ -5,9 +5,38 @@
 
 #include "engine/Game.h"
 #include "resources/FontID.h"
+#include "resources/AudioID.h"
+#include "entities/PlayerSkin.h"
+#include "systems/SaveSystem.h"
 
 #include <string>
 #include <iostream>
+#include <random>
+#include <array>
+
+namespace
+{
+    // Chọn ngẫu nhiên 1 trong 3 track InGame mỗi lần vào PlayScene —
+    // tăng đa dạng nhạc nền qua các lượt chơi. Nằm ở PlayScene (không
+    // phải AudioManager) vì đây là quyết định gameplay ("track nào
+    // phù hợp lúc này"), AudioManager chỉ phát cái được bảo phát.
+    MusicID pickRandomInGameMusic()
+    {
+        static std::mt19937 rng{ std::random_device{}() };
+
+        static constexpr std::array<MusicID, 3> kTracks =
+        {
+            MusicID::InGame1,
+            MusicID::InGame2,
+            MusicID::InGame3,
+        };
+
+        std::uniform_int_distribution<std::size_t> dist(
+            0, kTracks.size() - 1);
+
+        return kTracks[dist(rng)];
+    }
+}
 
 PlayScene::PlayScene(Game& game)
     : Scene(game)
@@ -26,8 +55,18 @@ void PlayScene::init()
 
     ResourceManager& res = game.getResources();
 
+    // SaveSystem chỉ dùng 1 lần ở đây (load-only) — đúng pattern
+    // one-shot instance đã dùng ở MenuScene/GameOverScene, không giữ
+    // state. Skin được chọn ở MenuScene (F5), lưu qua SaveData, đọc
+    // lại ở đây — PlayScene và MenuScene không phụ thuộc trực tiếp
+    // vào nhau, chỉ gián tiếp qua SaveData trên đĩa.
+    const SaveSystem save;
+    const SaveData    saveData     = save.load();
+    const TextureID   skinTexture  =
+        PlayerSkin::resolveTexture(saveData.selected_skin);
+
     m_background.init(res);
-    m_player.init(res, m_ground.y);
+    m_player.init(res, m_ground.y, skinTexture);
     m_obstacleManager.init(res, m_ground.y, m_ground.w);
 
     m_difficultyManager.reset();
@@ -55,6 +94,10 @@ void PlayScene::init()
     m_paused      = false;
 
     initPauseOverlay();
+
+    // Mix_PlayMusic tự halt track menu đang phát trước đó — không
+    // cần tự stopMusic().
+    game.getAudio().playMusic(pickRandomInGameMusic());
 
     std::cout << "[PlayScene] Initialized.\n";
 }
@@ -130,7 +173,8 @@ void PlayScene::handleEvents(const SDL_Event& event)
     if (event.type == SDL_KEYDOWN &&
         event.key.keysym.sym == SDLK_SPACE)
     {
-        m_player.jump();
+        if (m_player.jump())
+            game.getAudio().playSfx(SfxID::Jump);
     }
 }
 
@@ -160,12 +204,17 @@ void PlayScene::update(float deltaTime)
     m_player.update(deltaTime);
     m_obstacleManager.update(deltaTime);
 
+    if (m_player.justLanded())
+        game.getAudio().playSfx(SfxID::Landing);
+
     //----------------------------------------------------------
     // Collision
     //----------------------------------------------------------
 
     if (m_obstacleManager.checkCollision(m_player.getBounds()))
     {
+        game.getAudio().playSfx(SfxID::Collision);
+
         const int finalScore = m_score.getValue();
 
         game.getSceneManager().changeScene(
@@ -178,6 +227,9 @@ void PlayScene::update(float deltaTime)
     // Score
     //----------------------------------------------------------
 
+    // Không phát SFX ở đây nữa — Score.mp3 giờ phát 1 lần ở
+    // GameOverScene khi hiển thị điểm cuối, tránh lặp SFX liên tục
+    // mỗi khi vượt obstacle (gây ồn/khó chịu ở tốc độ cao).
     if (m_obstacleManager.checkPassed(m_player.getBounds().x))
         m_score.addPoint();
 }
